@@ -4,14 +4,21 @@ package com.bancolombia.pocatv.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
+
+import com.bancolombia.pocatv.dto.UsuarioRequestDTO;
+import com.bancolombia.pocatv.dto.UsuarioResponseDTO;
 import com.bancolombia.pocatv.model.AtvffUser;
+import com.bancolombia.pocatv.model.Xbknam;
 import com.bancolombia.pocatv.repository.AtvffUserRepository;
+import com.bancolombia.pocatv.repository.XbknamRepository;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import com.bancolombia.pocatv.service.AtvffUserService;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class AtvffUserServiceImpl implements AtvffUserService {
@@ -22,10 +29,20 @@ public class AtvffUserServiceImpl implements AtvffUserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
     
+    @Autowired
+    private  XbknamRepository areaRepository;
+    
  
     @Override
-    public List<AtvffUser> findAll() {
-        return atvffUserRepository.findAll();
+    public List<UsuarioResponseDTO> findAll() {
+    	List<AtvffUser> users = atvffUserRepository.findAll();
+    	return users.stream()
+                .map(user -> new UsuarioResponseDTO(
+                        user.getXuUser(),
+                        user.getXuName(),
+                        user.getXuCarg(),
+                        user.getXuAcce(), user.getXuUsrt(), user.getXuDom()))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -33,10 +50,6 @@ public class AtvffUserServiceImpl implements AtvffUserService {
         return atvffUserRepository.findById(xuUser);
     }
 
-    @Override
-    public AtvffUser save(AtvffUser atvffUser) {
-        return atvffUserRepository.save(atvffUser);
-    }
 
     @Override
     public void deleteById(String xuUser) {
@@ -63,14 +76,36 @@ public class AtvffUserServiceImpl implements AtvffUserService {
 	}
 
 	@Override
-	public AtvffUser updateAreaOperativa(String xuUser, BigDecimal xuArea) {
-		Optional<AtvffUser> optUsuario = atvffUserRepository.findById(xuUser);
-        if (optUsuario.isPresent()) {
-        	AtvffUser usuario = optUsuario.get();
-            usuario.setXuArea(xuArea);
-            return atvffUserRepository.save(usuario);
+	public AtvffUser registrarUsuario(UsuarioRequestDTO usuarioRequest) {
+		
+        AtvffUser user = new AtvffUser();
+        user.setXuUser(usuarioRequest.getXuUser());
+        user.setXuName(usuarioRequest.getXuName());
+        user.setXuCarg(usuarioRequest.getXuCarg());
+        //user.setXuArea(usuarioRequest.getXuArea());
+        user.setXuAcce(usuarioRequest.getXuAcce());
+        user.setXuDom(usuarioRequest.getXuDom());
+        user.setXuUsrt(usuarioRequest.getXuUsrt());
+        user.setXuPass(usuarioRequest.getXuPass());
+       
+        if (usuarioRequest.getXuArea() != null) {
+        	usuarioRequest.getXuArea().forEach(areaId -> {
+               
+                Xbknam area = areaRepository.findById(areaId)
+                    .orElseThrow(() -> new RuntimeException("Área no encontrada: " + areaId));
+                user.addArea(area);
+            });
         }
-        return null;
-	} 
+
+        return atvffUserRepository.save(user);
+	}
+
+	@Override
+	public Set<Xbknam> obtenerAreasUsuario(String userId) {
+		AtvffUser user = atvffUserRepository.findById(userId)
+	            .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + userId));
+	        return user.getXuArea();
+	    }
+	
 
 }

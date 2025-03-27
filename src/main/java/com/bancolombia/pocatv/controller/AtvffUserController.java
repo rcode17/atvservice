@@ -1,14 +1,17 @@
 package com.bancolombia.pocatv.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import com.bancolombia.pocatv.dto.AreaRequestDto;
+import com.bancolombia.pocatv.dto.UsuarioRequestDTO;
+import com.bancolombia.pocatv.dto.UsuarioResponseDTO;
 import com.bancolombia.pocatv.model.AtvffUser;
+import com.bancolombia.pocatv.model.Xbknam;
 import com.bancolombia.pocatv.service.AtvffUserService;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/atvffuser")
@@ -18,7 +21,7 @@ public class AtvffUserController {
     private AtvffUserService atvffUserService;
 
     @GetMapping
-    public List<AtvffUser> getAllUsers() {
+    public List<UsuarioResponseDTO> getAllUsers() {
         return atvffUserService.findAll();
     }
 
@@ -30,16 +33,17 @@ public class AtvffUserController {
     }
 
     @PostMapping
-    public AtvffUser createUser(@RequestBody AtvffUser atvffUser) {
-        return atvffUserService.save(atvffUser);
+    public ResponseEntity<AtvffUser> createUser(@RequestBody UsuarioRequestDTO usuarioRequest) {
+    	AtvffUser createdUser = atvffUserService.registrarUsuario(usuarioRequest);
+    	return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AtvffUser> updateUser(@PathVariable String id, @RequestBody AtvffUser atvffUser) {
+    public ResponseEntity<AtvffUser> updateUser(@PathVariable String id, @RequestBody UsuarioRequestDTO usuarioRequest) {
         return atvffUserService.findById(id)
                 .map(existingUser -> {
-                    atvffUser.setXuUser(existingUser.getXuUser());
-                    return ResponseEntity.ok(atvffUserService.save(atvffUser));
+                	usuarioRequest.setXuUser(existingUser.getXuUser());
+                    return ResponseEntity.ok(atvffUserService.registrarUsuario(usuarioRequest));
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -61,17 +65,12 @@ public class AtvffUserController {
         return ResponseEntity.ok(loggedInUser);
     }
     
-    
-    @PutMapping("/{xuUser}/area")
-    public ResponseEntity<AtvffUser> updateAreaUser(
-            @PathVariable String xuUser,
-            @RequestBody AreaRequestDto requestArea) {
-
-    	AtvffUser updatedUsuario = atvffUserService.updateAreaOperativa(xuUser, requestArea.getArea());
-        if (updatedUsuario != null) {
-            return ResponseEntity.ok(updatedUsuario);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    @GetMapping("/{userId}/areas")
+    public ResponseEntity<Set<Xbknam>> getUserAreas(@PathVariable("userId") String userId) {
+        Set<Xbknam> areas = atvffUserService.obtenerAreasUsuario(userId);
+        return ResponseEntity.ok(areas);
     }
+    
+    
+    
 }
