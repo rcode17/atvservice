@@ -13,7 +13,8 @@ public class UsuarioResponseDTO {
 	private String xuUser;
     private String xuName;
     private String xuCarg;
-    private BigDecimal xuArea;
+    //private BigDecimal xuArea;
     private BigDecimal xuAcce;
     private String xuDom;
+    private BigDecimal xuUsrt;
 }

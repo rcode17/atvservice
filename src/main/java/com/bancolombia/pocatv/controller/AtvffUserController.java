@@ -1,6 +1,8 @@
 package com.bancolombia.pocatv.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,8 +11,6 @@ import com.bancolombia.pocatv.dto.UsuarioResponseDTO;
 import com.bancolombia.pocatv.model.AtvffUser;
 import com.bancolombia.pocatv.model.Xbknam;
 import com.bancolombia.pocatv.service.AtvffUserService;
-
-import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -21,8 +21,22 @@ public class AtvffUserController {
     private AtvffUserService atvffUserService;
 
     @GetMapping
-    public List<UsuarioResponseDTO> getAllUsers() {
-        return atvffUserService.findAll();
+    public ResponseEntity<Page<UsuarioResponseDTO>> getAllUsers(Pageable pageable) {
+        
+        Page<AtvffUser> usersPage = atvffUserService.getAllUsers(pageable);
+
+        // Convierte cada AtvffUser a UsuarioResponseDTO
+        Page<UsuarioResponseDTO> dtoPage = usersPage.map(user -> new UsuarioResponseDTO(
+            user.getXuUser(),
+            user.getXuName(),
+            user.getXuCarg(),
+            user.getXuAcce(),
+            user.getXuDom(),
+            user.getXuUsrt()
+           
+        ));
+
+        return ResponseEntity.ok(dtoPage);
     }
 
     @GetMapping("/{id}")

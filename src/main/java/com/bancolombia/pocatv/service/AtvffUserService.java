@@ -1,18 +1,19 @@
 package com.bancolombia.pocatv.service;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
 import com.bancolombia.pocatv.dto.UsuarioRequestDTO;
-import com.bancolombia.pocatv.dto.UsuarioResponseDTO;
 import com.bancolombia.pocatv.model.AtvffUser;
 import com.bancolombia.pocatv.model.Xbknam;
 
 public interface AtvffUserService {
 	
-    List<UsuarioResponseDTO> findAll();
-    
+	Page<AtvffUser> getAllUsers(Pageable pageable);
+  
     Optional<AtvffUser> findById(String xuUser);
     
     AtvffUser registrarUsuario(UsuarioRequestDTO usuarioRequest);

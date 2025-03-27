@@ -2,11 +2,11 @@ package com.bancolombia.pocatv.service.impl;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.bancolombia.pocatv.dto.UsuarioRequestDTO;
-import com.bancolombia.pocatv.dto.UsuarioResponseDTO;
 import com.bancolombia.pocatv.model.AtvffUser;
 import com.bancolombia.pocatv.model.Xbknam;
 import com.bancolombia.pocatv.repository.AtvffUserRepository;
@@ -15,10 +15,8 @@ import com.bancolombia.pocatv.repository.XbknamRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import com.bancolombia.pocatv.service.AtvffUserService;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class AtvffUserServiceImpl implements AtvffUserService {
@@ -32,17 +30,9 @@ public class AtvffUserServiceImpl implements AtvffUserService {
     @Autowired
     private  XbknamRepository areaRepository;
     
- 
     @Override
-    public List<UsuarioResponseDTO> findAll() {
-    	List<AtvffUser> users = atvffUserRepository.findAll();
-    	return users.stream()
-                .map(user -> new UsuarioResponseDTO(
-                        user.getXuUser(),
-                        user.getXuName(),
-                        user.getXuCarg(),
-                        user.getXuAcce(), user.getXuUsrt(), user.getXuDom()))
-                .collect(Collectors.toList());
+    public Page<AtvffUser> getAllUsers(Pageable pageable) {
+        return atvffUserRepository.findAll(pageable);
     }
 
     @Override
