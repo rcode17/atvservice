@@ -13,11 +13,10 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("*") // Permitir cualquier origen
-                        //.allowedOriginPatterns("*") // Alternativa más flexible
-                        .allowedMethods("*") // Permitir cualquier método HTTP
-                        .allowedHeaders("*") // Permitir cualquier encabezado
-                        .allowCredentials(true); // Habilita credenciales (cookies, auth headers)
+                        .allowedOriginPatterns("*") // Permite cualquier origen sin romper CORS con credenciales
+                        .allowedMethods("*") // Permite cualquier método HTTP
+                        .allowedHeaders("*") // Permite cualquier encabezado
+                        .allowCredentials(true); // Habilita el uso de cookies y autenticación
             }
         };
     }
