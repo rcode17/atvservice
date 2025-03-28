@@ -13,10 +13,10 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOriginPatterns("https://atvbancolombia.azurewebsites.net","http://localhost:4200") // Permite cualquier origen sin romper CORS con credenciales
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Permite cualquier método HTTP
-                        .allowedHeaders("*") // Permite cualquier encabezado
-                        .allowCredentials(true); // Habilita el uso de cookies y autenticación
+                        .allowedOrigins("https://atvbancolombia.azurewebsites.net","http://localhost:4200") // Especifica tu frontend
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
             }
         };
     }

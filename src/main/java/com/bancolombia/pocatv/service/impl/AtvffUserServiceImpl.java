@@ -4,6 +4,7 @@ package com.bancolombia.pocatv.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.bancolombia.pocatv.dto.UsuarioRequestDTO;
@@ -14,6 +15,7 @@ import com.bancolombia.pocatv.repository.XbknamRepository;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import com.bancolombia.pocatv.service.AtvffUserService;
+import com.bancolombia.pocatv.specification.AtvffUserSpecification;
 
 import java.util.Optional;
 import java.util.Set;
@@ -29,11 +31,7 @@ public class AtvffUserServiceImpl implements AtvffUserService {
     
     @Autowired
     private  XbknamRepository areaRepository;
-    
-    @Override
-    public Page<AtvffUser> getAllUsers(Pageable pageable) {
-        return atvffUserRepository.findAll(pageable);
-    }
+   
 
     @Override
     public Optional<AtvffUser> findById(String xuUser) {
@@ -96,6 +94,18 @@ public class AtvffUserServiceImpl implements AtvffUserService {
 	            .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + userId));
 	        return user.getXuArea();
 	    }
+
+	
+	@Override
+	public Page<AtvffUser> getAllUsers(String xuUser, Pageable pageable) {
+        Specification<AtvffUser> spec = Specification.where(null);
+
+        if (xuUser != null && !xuUser.isEmpty()) {
+            spec = spec.and(AtvffUserSpecification.filterByUsername(xuUser));
+        }
+
+        return atvffUserRepository.findAll(spec, pageable);
+    }
 	
 
 }

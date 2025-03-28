@@ -1,12 +1,14 @@
 package com.bancolombia.pocatv.service;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Optional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import com.bancolombia.pocatv.model.Xbknam;
 
 public interface XbknamService {
-    List<Xbknam> getAllXbknam();
+	Page<Xbknam> getAllXbknam(String xnname, Pageable pageable);
     Optional<Xbknam> getXbknamById(BigDecimal id);
 }

@@ -21,19 +21,19 @@ public class AtvffUserController {
     private AtvffUserService atvffUserService;
 
     @GetMapping
-    public ResponseEntity<Page<UsuarioResponseDTO>> getAllUsers(Pageable pageable) {
-        
-        Page<AtvffUser> usersPage = atvffUserService.getAllUsers(pageable);
+    public ResponseEntity<Page<UsuarioResponseDTO>> getAllUsers(
+            @RequestParam(required = false) String xuUser,
+            Pageable pageable) {
 
-        // Convierte cada AtvffUser a UsuarioResponseDTO
+        Page<AtvffUser> usersPage = atvffUserService.getAllUsers(xuUser, pageable);
+
         Page<UsuarioResponseDTO> dtoPage = usersPage.map(user -> new UsuarioResponseDTO(
-            user.getXuUser(),
-            user.getXuName(),
-            user.getXuCarg(),
-            user.getXuAcce(),
-            user.getXuDom(),
-            user.getXuUsrt()
-           
+                user.getXuUser(),
+                user.getXuName(),
+                user.getXuCarg(),
+                user.getXuAcce(),
+                user.getXuDom(),
+                user.getXuUsrt()
         ));
 
         return ResponseEntity.ok(dtoPage);

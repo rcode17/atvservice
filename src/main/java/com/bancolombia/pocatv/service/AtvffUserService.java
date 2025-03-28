@@ -12,7 +12,7 @@ import com.bancolombia.pocatv.model.Xbknam;
 
 public interface AtvffUserService {
 	
-	Page<AtvffUser> getAllUsers(Pageable pageable);
+	Page<AtvffUser> getAllUsers(String xuUser,Pageable pageable);
   
     Optional<AtvffUser> findById(String xuUser);
     
