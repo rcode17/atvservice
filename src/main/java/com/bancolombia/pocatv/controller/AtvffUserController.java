@@ -6,11 +6,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.bancolombia.pocatv.dto.UsuarioProductoDTO;
 import com.bancolombia.pocatv.dto.UsuarioRequestDTO;
 import com.bancolombia.pocatv.dto.UsuarioResponseDTO;
+import com.bancolombia.pocatv.model.AtvffPdo;
 import com.bancolombia.pocatv.model.AtvffUser;
 import com.bancolombia.pocatv.model.Xbknam;
 import com.bancolombia.pocatv.service.AtvffUserService;
+
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -33,7 +39,9 @@ public class AtvffUserController {
                 user.getXuCarg(),
                 user.getXuAcce(),
                 user.getXuDom(),
-                user.getXuUsrt()
+                user.getXuUsrt(),
+                user.getXuPass(),
+                user.getXuArea()
         ));
 
         return ResponseEntity.ok(dtoPage);
@@ -85,6 +93,50 @@ public class AtvffUserController {
         return ResponseEntity.ok(areas);
     }
     
+    
+    @PutMapping("/{xuUser}/areas")
+    public ResponseEntity<AtvffUser> AddAreasUser(
+            @PathVariable String xuUser,
+            @RequestBody List<BigDecimal> areaIds) {
+        AtvffUser usuarioActualizado = atvffUserService.addAreasUser(xuUser, areaIds);
+        return ResponseEntity.ok(usuarioActualizado);
+    }
+    
+    @DeleteMapping("/{xuUser}/areas")
+    public ResponseEntity<AtvffUser> eliminarAreasDeUsuario(
+            @PathVariable String xuUser,
+            @RequestBody List<BigDecimal> areaIds) {
+
+        AtvffUser usuarioActualizado = atvffUserService.deleteAreasUser(xuUser, areaIds);
+        return ResponseEntity.ok(usuarioActualizado);
+    }
+    
+    
+    @PostMapping("/{xuUser}/productos")
+    public ResponseEntity<AtvffUser> addProductosUser(
+            @PathVariable("xuUser") String xuUser,
+            @RequestBody List<UsuarioProductoDTO> productosRequest) {
+
+        AtvffUser updatedUser = atvffUserService.addProductoUser(xuUser, productosRequest);
+        return ResponseEntity.ok(updatedUser);
+    }
+    
+    
+    @DeleteMapping("/{xuUser}/productos")
+    public ResponseEntity<AtvffUser> deleteProductosUser(
+            @PathVariable("xuUser") String xuUser,
+            @RequestBody List<UsuarioProductoDTO> productosRequest) {
+
+        AtvffUser updatedUser = atvffUserService.deleteProductoUser(xuUser, productosRequest);
+        return ResponseEntity.ok(updatedUser);
+    }
+    
+    
+    @GetMapping("/{xuuser}/productos")
+    public ResponseEntity<Set<AtvffPdo>> getProductosByUser(@PathVariable("xuuser") String xuUser) {
+        Set<AtvffPdo> productos = atvffUserService.getProductosByUser(xuUser);
+        return ResponseEntity.ok(productos);
+    }
     
     
 }

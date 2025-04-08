@@ -10,9 +10,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AtvffFreResponseDto {
-    private String	xpcopr; // Campo de atvffpdo
-    private String	xpcodo; // Campo de atvffpdo
-    private String	xpdsdo; // Campo de atvffpdo
-    private Character	fxfrar; // Campo de atvffpdo
-    private BigDecimal	fxdifr; // Campo de atvffpdo
+    private String	xpCopr;
+    private String	xpCodo;
+    private String	xpDsdo;
+    private BigDecimal	xpCta;
+    private Character	xpStdo;
+    private Character	xpFeca;
+    private Character	fxFrar;
+    private BigDecimal	fxDifr;
 }

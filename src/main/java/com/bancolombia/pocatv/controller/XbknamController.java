@@ -26,11 +26,11 @@ public class XbknamController {
     private XbknamService xbknamService;
 
     @GetMapping
-    public ResponseEntity<Page<Xbknam>> getAllUsers(
+    public ResponseEntity<Page<Xbknam>> getAllAreas(
             @RequestParam(required = false) String xnname,
             Pageable pageable) {
-        Page<Xbknam> usersPage = xbknamService.getAllXbknam(xnname, pageable);
-        return ResponseEntity.ok(usersPage);
+        Page<Xbknam> areasPage = xbknamService.getAllXbknam(xnname, pageable);
+        return ResponseEntity.ok(areasPage);
     }
 
     // Obtener un registro por ID

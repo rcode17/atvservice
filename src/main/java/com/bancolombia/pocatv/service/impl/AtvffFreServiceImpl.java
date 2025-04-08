@@ -39,8 +39,8 @@ public class AtvffFreServiceImpl implements AtvffFreService{
     }
     
     @Override
-    public List<AtvffFreResponseDto> getAllAtvffResults() {
-        return repository.findAllAtvffResults();
+    public Page<AtvffFreResponseDto> getAllAtvffResults(Pageable pageable) {
+        return repository.findAllAtvffResults(pageable);
     }
 
 }

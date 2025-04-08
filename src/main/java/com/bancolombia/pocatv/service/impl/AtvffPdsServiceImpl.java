@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -36,5 +37,10 @@ public class AtvffPdsServiceImpl implements AtvffPdsService{
     public void deleteById(AtvffPdsId id) {
         repository.deleteById(id);
     }
+
+	@Override
+	public List<AtvffPds> findByIdXsCosu(Integer xscosu) {
+		return repository.findByIdXsCosu(xscosu);
+	}
 	
 }

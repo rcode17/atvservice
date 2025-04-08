@@ -7,9 +7,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.bancolombia.pocatv.dto.UsuarioProductoDTO;
 import com.bancolombia.pocatv.dto.UsuarioRequestDTO;
+import com.bancolombia.pocatv.model.AtvffPdo;
+import com.bancolombia.pocatv.model.AtvffPdoId;
 import com.bancolombia.pocatv.model.AtvffUser;
 import com.bancolombia.pocatv.model.Xbknam;
+import com.bancolombia.pocatv.repository.AtvffPdoRepository;
 import com.bancolombia.pocatv.repository.AtvffUserRepository;
 import com.bancolombia.pocatv.repository.XbknamRepository;
 
@@ -17,6 +21,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.bancolombia.pocatv.service.AtvffUserService;
 import com.bancolombia.pocatv.specification.AtvffUserSpecification;
 
+import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -25,6 +31,9 @@ public class AtvffUserServiceImpl implements AtvffUserService {
 
     @Autowired
     private AtvffUserRepository atvffUserRepository;
+    
+    @Autowired
+    private AtvffPdoRepository atvffPdoRepository;
     
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -80,7 +89,7 @@ public class AtvffUserServiceImpl implements AtvffUserService {
         	usuarioRequest.getXuArea().forEach(areaId -> {
                
                 Xbknam area = areaRepository.findById(areaId)
-                    .orElseThrow(() -> new RuntimeException("Área no encontrada: " + areaId));
+                    .orElseThrow(() -> new IllegalArgumentException("Área no encontrada: " + areaId));
                 user.addArea(area);
             });
         }
@@ -91,7 +100,7 @@ public class AtvffUserServiceImpl implements AtvffUserService {
 	@Override
 	public Set<Xbknam> obtenerAreasUsuario(String userId) {
 		AtvffUser user = atvffUserRepository.findById(userId)
-	            .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + userId));
+	            .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con id: " + userId));
 	        return user.getXuArea();
 	    }
 
@@ -107,5 +116,86 @@ public class AtvffUserServiceImpl implements AtvffUserService {
         return atvffUserRepository.findAll(spec, pageable);
     }
 	
+	@Override
+    public AtvffUser addAreasUser(String xuUser, List<BigDecimal> areaIds) {
+    
+        AtvffUser user = atvffUserRepository.findById(xuUser)
+                            .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con id: " + xuUser));
+
+        // Limpiar las áreas actuales del usuario.
+        // Esto es opcional, dependiendo de si deseas reemplazar todas las áreas o solo agregar nuevas.
+        //user.getXuArea().clear();
+       
+        if (areaIds != null) {
+            areaIds.forEach(areaId -> {
+                
+                Xbknam area = areaRepository.findById(areaId)
+                        .orElseThrow(() -> new IllegalArgumentException("Área no encontrada: " + areaId));
+
+                user.addArea(area);
+            });
+        }
+
+        return atvffUserRepository.save(user);
+    }
+	
+	@Override
+	public AtvffUser deleteAreasUser(String xuUser, List<BigDecimal> areaIds) {
+	    
+	    AtvffUser user = atvffUserRepository.findById(xuUser)
+	                        .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con id: " + xuUser));
+	    
+	    if (areaIds != null) {
+	        areaIds.forEach(areaId -> {
+	            
+	            Xbknam area = areaRepository.findById(areaId)
+	                    .orElseThrow(() -> new IllegalArgumentException("Área no encontrada: " + areaId));
+	            
+	            user.getXuArea().remove(area);
+	        });
+	    }
+	    
+	    return atvffUserRepository.save(user);
+	}
+
+
+	@Override
+	public AtvffUser addProductoUser(String xuUser, List<UsuarioProductoDTO> productosRequest) {
+		
+        AtvffUser user = atvffUserRepository.findById(xuUser)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + xuUser));
+
+        for (UsuarioProductoDTO pr : productosRequest) {
+            AtvffPdo producto = atvffPdoRepository.findById(new AtvffPdoId(pr.getXpcopr(), pr.getXpcodo()))
+                    .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado con clave: " 
+                                    + pr.getXpcopr() + ", " + pr.getXpcodo()));
+            user.addProducto(producto);
+        }
+        return atvffUserRepository.save(user);
+	}
+
+
+	@Override
+	public AtvffUser deleteProductoUser(String xuUser, List<UsuarioProductoDTO> productosRequest) {
+		
+        AtvffUser user = atvffUserRepository.findById(xuUser)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + xuUser));
+
+        for (UsuarioProductoDTO pr : productosRequest) {
+            AtvffPdo producto = atvffPdoRepository.findById(new AtvffPdoId(pr.getXpcopr(), pr.getXpcodo()))
+                    .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado con clave: " 
+                                    + pr.getXpcopr() + ", " + pr.getXpcodo()));
+            user.removeProducto(producto);
+        }
+        return atvffUserRepository.save(user);
+    }
+
+
+	@Override
+	public Set<AtvffPdo> getProductosByUser(String xuUser) {
+		 AtvffUser user = atvffUserRepository.findById(xuUser)
+	                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado con ID: " + xuUser));
+	        return user.getXuCopr();
+	}
 
 }

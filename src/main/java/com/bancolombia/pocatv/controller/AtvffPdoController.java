@@ -20,8 +20,8 @@ public class AtvffPdoController {
 	    private AtvffPdoService service;
 
 	    @GetMapping
-	    public Page<AtvffPdo> getAll(Pageable pageable) {
-	        return service.getAll(pageable);
+	    public Page<AtvffPdo> getAll(@RequestParam(required = false) String xpDsdo, Pageable pageable) {
+	        return service.getAll(xpDsdo, pageable);
 	    }
 
 	    @GetMapping("/{xpcopr}/{xpcodo}")

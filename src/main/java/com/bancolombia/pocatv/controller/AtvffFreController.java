@@ -66,7 +66,7 @@ public class AtvffFreController {
     }
 	
 	@GetMapping("/product")
-    public List<AtvffFreResponseDto> getAtvffResults() {
-        return service.getAllAtvffResults();
+    public Page<AtvffFreResponseDto> getAtvffResults(Pageable pageable) {
+        return service.getAllAtvffResults(pageable);
     }
 }

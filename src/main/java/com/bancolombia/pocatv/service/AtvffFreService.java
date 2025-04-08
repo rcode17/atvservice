@@ -14,5 +14,5 @@ public interface AtvffFreService {
     Optional<AtvffFre> findById(AtvffFreId id);
     AtvffFre save(AtvffFre atvfffre);
     void deleteById(AtvffFreId id);
-    List<AtvffFreResponseDto> getAllAtvffResults();
+    Page<AtvffFreResponseDto> getAllAtvffResults(Pageable pageable);
 }

@@ -55,6 +55,26 @@ public class AtvffUser {
     public void removeArea(Xbknam area) {
     	xuArea.remove(area);
     }
+    
+    
+    @ManyToMany
+    @JoinTable(
+        name = "ATVFFUSER_ATVFFPDO",
+        joinColumns = @JoinColumn(name = "xuuser"),
+        inverseJoinColumns = {
+            @JoinColumn(name = "xpcopr", referencedColumnName = "xpcopr"),
+            @JoinColumn(name = "xpcodo", referencedColumnName = "xpcodo")
+        }
+    )
+    private Set<AtvffPdo> xuCopr = new HashSet<>();
+
+    public void addProducto(AtvffPdo producto) {
+    	xuCopr.add(producto);
+    }
+
+    public void removeProducto(AtvffPdo producto) {
+    	xuCopr.remove(producto);
+    }
 
     
 }

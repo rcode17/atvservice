@@ -3,6 +3,7 @@ package com.bancolombia.pocatv.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import com.bancolombia.pocatv.dto.atvffcpsfechaResponseDTO;
 import com.bancolombia.pocatv.model.Atvffcps;
 import com.bancolombia.pocatv.service.AtvffcpsService;
 
@@ -18,7 +19,7 @@ public class AtvffcpsController {
     // Otros métodos...
 
     @GetMapping("/search")
-    public List<Atvffcps> findByYearAndMonth(@RequestParam Integer year, @RequestParam Integer month) {
-        return service.findByYearAndMonth(year, month);
+    public List<atvffcpsfechaResponseDTO> findByYearAndMonth(@RequestParam String cscopr, @RequestParam String cscodo) {
+        return service.findDescriptionsByYearAndMonth(cscopr, cscodo);
     }
 }
