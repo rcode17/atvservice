@@ -4,7 +4,6 @@ package com.bancolombia.pocatv.model;
 
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -263,6 +262,22 @@ public class Atvffarq {
                (aqrain12 != null && !aqrain12.trim().isEmpty()) ||
                (aqrain13 != null && !aqrain13.trim().isEmpty()) ||
                (aqrain14 != null && !aqrain14.trim().isEmpty());
+    }
+    
+    public String getAqcopr() {
+        return aqcopr;
+    }
+
+    public void setAqcopr(String aqcopr) {
+        this.aqcopr = aqcopr;
+    }
+    
+    public String getAqcodo() {
+        return aqcodo;
+    }
+
+    public void setAqcodo(String aqcodo) {
+        this.aqcodo = aqcodo;
     }
 
 }

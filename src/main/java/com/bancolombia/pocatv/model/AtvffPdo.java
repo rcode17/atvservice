@@ -5,24 +5,78 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 
-@Entity
 @Data
+@Entity
 @Table(name = "atvffpdo")
+@IdClass(AtvffPdoId.class)
 public class AtvffPdo {
-	
-	@EmbeddedId
-    private AtvffPdoId id;
+    
+    @Id
+    @Column(name = "xpcopr", nullable = false)
+    private String xpcopr; // Definido como bpchar(2)
 
-    @Column(name = "xpdsdo", length = 25, nullable = false)
-    private String xpDsdo;
+    @Id
+    @Column(name = "xpcodo", nullable = false)
+    private String xpcodo; // Definido como bpchar(3)
+
+    @Column(name = "xpdsdo", nullable = false)
+    private String xpdsdo; // Definido como bpchar(25)
 
     @Column(name = "xpcta", nullable = false)
-    private Double xpCta;
+    private Double xpcta; // Definido como numeric(12)
 
-    @Column(name = "xpstdo", length = 1, nullable = false)
-    private String xpStdo;
+    @Column(name = "xpstdo", nullable = false)
+    private String xpstdo; // Definido como bpchar(1)
 
-    @Column(name = "xpfeca", length = 1, nullable = false)
-    private String xpFeca;
+    @Column(name = "xpfeca", nullable = false)
+    private String xpfeca; // Definido como bpchar(1)
 
+    // Getters y Setters
+    public String getXpcopr() {
+        return xpcopr;
+    }
+
+    public void setXpcopr(String xpcopr) {
+        this.xpcopr = xpcopr;
+    }
+
+    public String getXpcodo() {
+        return xpcodo;
+    }
+
+    public void setXpcodo(String xpcodo) {
+        this.xpcodo = xpcodo;
+    }
+
+    public String getXpdsdo() {
+        return xpdsdo;
+    }
+
+    public void setXpdsdo(String xpdsdo) {
+        this.xpdsdo = xpdsdo;
+    }
+
+    public Double getXpcta() {
+        return xpcta;
+    }
+
+    public void setXpcta(Double xpcta) {
+        this.xpcta = xpcta;
+    }
+
+    public String getXpstdo() {
+        return xpstdo;
+    }
+
+    public void setXpstdo(String xpstdo) {
+        this.xpstdo = xpstdo;
+    }
+
+    public String getXpfeca() {
+        return xpfeca;
+    }
+
+    public void setXpfeca(String xpfeca) {
+        this.xpfeca = xpfeca;
+    }
 }

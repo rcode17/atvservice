@@ -27,8 +27,8 @@ public class AtvffPdoController {
 	    @GetMapping("/{xpcopr}/{xpcodo}")
 	    public ResponseEntity<AtvffPdo> getById(@PathVariable String xpcopr, @PathVariable String xpcodo) {
 	        AtvffPdoId id = new AtvffPdoId();
-	        id.setXpCopr(xpcopr);
-	        id.setXpCodo(xpcodo);
+	        id.setXpcopr(xpcopr);
+	        id.setXpcodo(xpcodo);
 	        Optional<AtvffPdo> atvffpdo = service.findById(id);
 	        return atvffpdo.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
 	    }
@@ -41,20 +41,20 @@ public class AtvffPdoController {
 	    @PutMapping("/{xpcopr}/{xpcodo}")
 	    public ResponseEntity<AtvffPdo> update(@PathVariable String xpcopr, @PathVariable String xpcodo, @RequestBody AtvffPdo atvffpdo) {
 	        AtvffPdoId id = new AtvffPdoId();
-	        id.setXpCopr(xpcopr);
-	        id.setXpCodo(xpcodo);
+	        id.setXpcopr(xpcopr);
+	        id.setXpcodo(xpcodo);
 	        if (!service.findById(id).isPresent()) {
 	            return ResponseEntity.notFound().build();
 	        }
-	        atvffpdo.setId(id);
+	        atvffpdo.setXpcopr(id.getXpcopr());
 	        return ResponseEntity.ok(service.save(atvffpdo));
 	    }
 
 	    @DeleteMapping("/{xpcopr}/{xpcodo}")
 	    public ResponseEntity<Void> delete(@PathVariable String xpcopr, @PathVariable String xpcodo) {
 	    	AtvffPdoId id = new AtvffPdoId();
-	        id.setXpCopr(xpcopr);
-	        id.setXpCodo(xpcodo);
+	        id.setXpcopr(xpcopr);
+	        id.setXpcodo(xpcodo);
 	        if (!service.findById(id).isPresent()) {
 	            return ResponseEntity.notFound().build();
 	        }

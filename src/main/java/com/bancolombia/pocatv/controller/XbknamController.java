@@ -1,7 +1,6 @@
 package com.bancolombia.pocatv.controller;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -13,8 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.bancolombia.pocatv.dto.UsuarioResponseDTO;
-import com.bancolombia.pocatv.model.AtvffUser;
+import com.bancolombia.pocatv.dto.AreaDocumentoPdoDTO;
 import com.bancolombia.pocatv.model.Xbknam;
 import com.bancolombia.pocatv.service.XbknamService;
 
@@ -39,6 +37,16 @@ public class XbknamController {
         return xbknamService.getXbknamById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+    
+    
+    @GetMapping("/producto-documento")
+    public ResponseEntity<Page<AreaDocumentoPdoDTO>> getAreaProductoDocumento(
+            @RequestParam String codPro,
+            @RequestParam String codDoc,
+            Pageable pageable) {
+        Page<AreaDocumentoPdoDTO> areas = xbknamService.getAreaProductoDocumento(codPro, codDoc, pageable);
+        return ResponseEntity.ok(areas);
     }
 
 }

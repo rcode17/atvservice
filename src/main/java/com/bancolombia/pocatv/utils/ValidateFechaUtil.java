@@ -2,6 +2,9 @@ package com.bancolombia.pocatv.utils;
 
 import java.time.LocalDate;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class ValidateFechaUtil {
 	/**
      * Valida que el mes y año ingresados sean correctos.

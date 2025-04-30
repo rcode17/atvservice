@@ -30,9 +30,9 @@ public class AtvffPdsController {
             @PathVariable String xsCodo) {
 
         AtvffPdsId id = new AtvffPdsId();
-        id.setXsCosu(xsCosu);
-        id.setXsCopr(xsCopr);
-        id.setXsCodo(xsCodo);
+        id.setXscosu(xsCosu);
+        id.setXscopr(xsCopr);
+        id.setXscodo(xsCodo);
 
         Optional<AtvffPds> atvffpds = service.findById(id);
         return atvffpds.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
@@ -51,15 +51,15 @@ public class AtvffPdsController {
             @RequestBody AtvffPds atvffpds) {
 
         AtvffPdsId id = new AtvffPdsId();
-        id.setXsCosu(xsCosu);
-        id.setXsCopr(xsCopr);
-        id.setXsCodo(xsCodo);
+        id.setXscosu(xsCosu);
+        id.setXscopr(xsCopr);
+        id.setXscodo(xsCodo);
 
         if (!service.findById(id).isPresent()) {
             return ResponseEntity.notFound().build();
         }
 
-        atvffpds.setId(id);
+        atvffpds.setXscosu(id.getXscosu());
         return ResponseEntity.ok(service.save(atvffpds));
     }
 	
@@ -70,9 +70,9 @@ public class AtvffPdsController {
             @PathVariable String xsCodo) {
 
         AtvffPdsId id = new AtvffPdsId();
-        id.setXsCosu(xsCosu);
-        id.setXsCopr(xsCopr);
-        id.setXsCodo(xsCodo);
+        id.setXscosu(xsCosu);
+        id.setXscopr(xsCopr);
+        id.setXscodo(xsCodo);
 
         if (!service.findById(id).isPresent()) {
             return ResponseEntity.notFound().build();

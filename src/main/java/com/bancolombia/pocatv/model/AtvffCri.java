@@ -30,5 +30,4 @@ public class AtvffCri {
     @Column(name = "crdif", nullable = false)
     private BigDecimal crdif;
 
-    // Puedes agregar métodos adicionales según sea necesario
 }

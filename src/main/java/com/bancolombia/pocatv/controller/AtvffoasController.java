@@ -1,5 +1,7 @@
 package com.bancolombia.pocatv.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bancolombia.pocatv.dto.GrupoResponseDTO;
 import com.bancolombia.pocatv.model.Atvffoas;
 import com.bancolombia.pocatv.service.AtvffoasService;
 
@@ -57,6 +60,23 @@ public class AtvffoasController {
             Pageable pageable) {
         Page<Atvffoas> resultado = atvffoasService.buscarPorUsuarioAnoMes(usuario, ano, mes, pageable);
         return ResponseEntity.ok(resultado);
+    }
+    
+    
+    /**
+     * Endpoint para obtener la agrupación por oaxnnmky de un año dado, usuario y dominio.
+     * Ejemplo de llamada: GET /api/atvffoas/2023
+     * @param oaano Año a filtrar.
+     * @return Lista de GrupoResponseDTO.
+     */
+    
+    @GetMapping("/{anno}")
+    public ResponseEntity<Page<GrupoResponseDTO>> obtenerDatosPorAnoUserDominio(@PathVariable Integer anno, 
+    		@RequestParam("fuser") String fuser,
+    		@RequestParam("dominio") String dominio,
+    		Pageable pageable) {
+    	Page<GrupoResponseDTO> respuesta = atvffoasService.obtenerDatosPorAnoUserDominio(anno, fuser, dominio, pageable);
+        return ResponseEntity.ok(respuesta);
     }
 
 }

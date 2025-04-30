@@ -30,6 +30,8 @@ public class AtvffrecServiceImpl implements AtvffrecService {
             dto.setRccdsuf(entity.getRccdsuf());
             dto.setRccedcn(entity.getRccedcn());
             dto.setRcrech(entity.getRcrech());
+            dto.setRcpear(entity.getRcpear());
+            dto.setRcprcu(entity.getRcprcu());
             return dto;
         });
     }

@@ -1,6 +1,7 @@
 package com.bancolombia.pocatv.repository;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -10,6 +11,6 @@ import com.bancolombia.pocatv.model.Xbknam;
 
 @Repository
 public interface XbknamRepository extends JpaRepository<Xbknam, BigDecimal>,JpaSpecificationExecutor<Xbknam> {
-
+	 Optional<Xbknam> findByXnnmky(Integer xnnmky);
 }
  

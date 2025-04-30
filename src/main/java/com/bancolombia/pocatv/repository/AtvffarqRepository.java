@@ -1,33 +1,129 @@
 package com.bancolombia.pocatv.repository;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.bancolombia.pocatv.model.Atvffarq;
 import com.bancolombia.pocatv.model.AtvffarqId;
 
-
 @Repository
 public interface AtvffarqRepository extends JpaRepository<Atvffarq, AtvffarqId> {
     // Método para consultar un registro por los campos aqcdsu, aqcopr, aqcodo y aqfear
     Optional<Atvffarq> findByAqcdsuAndAqcoprAndAqcodoAndAqfear(
-            Integer aqcdsu, 
-            String aqcopr, 
-            String aqcodo, 
+            Integer aqcdsu,
+            String aqcopr,
+            String aqcodo,
             String aqfear);
-    
-    
+
     List<Atvffarq> findByAqcdsuAndAqcoprAndAqcodoAndAqfearAndAqcedan(
-            Integer aqcdsu, 
-            String aqcopr, 
-            String aqcodo, 
-            String aqfear, 
+            Integer aqcdsu,
+            String aqcopr,
+            String aqcodo,
+            String aqfear,
             String aqcedan);
-   
+
+    @Query(value = "SELECT * FROM atvffarq a WHERE a.aqres = :resultado AND a.aqfear >= :fechaInicio", nativeQuery = true)
+    List<Atvffarq> findByAqresAndAqfearGreaterThanEqual(@Param("resultado") String resultado, @Param("fechaInicio") String fechaInicio);
+
+    /**
+     * Busca arqueos por mes y año para una sucursal, producto y documento específicos
+     */
+    @Query("SELECT a FROM Atvffarq a WHERE a.aqcdsu = :sucursal AND a.aqcopr = :producto AND a.aqcodo = :documento AND SUBSTRING(a.aqfear, 1, 4) = :ano AND SUBSTRING(a.aqfear, 6, 2) = :mes")
+    List<Atvffarq> findArqueosPorMes(
+            @Param("sucursal") Integer sucursal,
+            @Param("producto") String producto,
+            @Param("documento") String documento,
+            @Param("ano") String ano,
+            @Param("mes") String mes
+    );
+
+    /**
+     * Verifica si existe un arqueo para una fecha específica
+     */
+    boolean existsByAqcdsuAndAqcoprAndAqcodoAndAqfear(
+            Integer aqcdsu,
+            String aqcopr,
+            String aqcodo,
+            String aqfear
+    );
+
+    List<Atvffarq> findByAqcdsuAndAqcoprAndAqcodoAndAqfearBetween(
+            Integer aqcdsu,
+            String aqcopr,
+            String aqcodo,
+            String fechaInicio,
+            String fechaFin);
+
+    @Query("SELECT a FROM Atvffarq a WHERE a.aqcdsu = :sucursal AND a.aqcopr = :producto AND a.aqcodo = :documento AND a.aqfear BETWEEN :fechaInicio AND :fechaFin")
+    List<Atvffarq> findArqueosByProductoDocumentoAndPeriodo(
+            @Param("sucursal") Integer sucursal,
+            @Param("producto") String producto,
+            @Param("documento") String documento,
+            @Param("fechaInicio") String fechaInicio,
+            @Param("fechaFin") String fechaFin);
+
+    @Query("SELECT COUNT(a) FROM Atvffarq a " +
+            "WHERE a.aqcdsu = :sucursal " +
+            "  AND a.aqcopr = :producto " +
+            "  AND a.aqcodo = :documento " +
+            "  AND a.aqfear BETWEEN :fechaInicio AND :fechaFin " +
+            "  AND (a.aqres = 'C' OR a.aqjust = 'S')")
+    Integer countArqueosCuadradosByProductoDocumentoAndPeriodo(
+            @Param("sucursal") Integer sucursal,
+            @Param("producto") String producto,
+            @Param("documento") String documento,
+            @Param("fechaInicio") String fechaInicio,
+            @Param("fechaFin") String fechaFin);
+
+    @Query("SELECT a FROM Atvffarq a WHERE SUBSTRING(a.aqfear, 1, 4) = :year")
+    List<Atvffarq> findByYear(@Param("year") String year);
+
+    @Query("SELECT a FROM Atvffarq a WHERE a.aqcdsu = :sucursal AND a.aqcopr = :copr AND a.aqcodo = :codo ORDER BY a.aqfear")
+    List<Atvffarq> findBySucursalAndProductoAndDocumentoOrderByFecha(
+            @Param("sucursal") Integer sucursal,
+            @Param("copr") String copr,
+            @Param("codo") String codo);
+
+    @Query(value ="SELECT * FROM Atvffarq a WHERE a.aqcdsu = :sucursal AND a.aqcopr = :copr AND a.aqcodo = :codo AND a.aqfear < :fecha ORDER BY a.aqfear DESC", nativeQuery = true)
+    List<Atvffarq> findArqueosAnteriores(
+            @Param("sucursal") Integer sucursal,
+            @Param("copr") String copr,
+            @Param("codo") String codo,
+            @Param("fecha") LocalDate fecha);
+
+    default Optional<Atvffarq> findArqueoAnterior(Integer sucursal, String copr, String codo, LocalDate fecha) {
+        List<Atvffarq> arqueosAnteriores = findArqueosAnteriores(sucursal, copr, codo, fecha);
+        return arqueosAnteriores.isEmpty() ? Optional.empty() : Optional.of(arqueosAnteriores.get(0));
+    }
 
 
-   }
+    // Consulta para buscar por año y mes usando cadenas
+    @Query("SELECT a FROM Atvffarq a WHERE a.aqfear LIKE :yearMonth%")
+    List<Atvffarq> findByYearMonthString(@Param("yearMonth") String yearMonth);
+
+    // Método que convierte año y mes a formato de cadena para la consulta
+    default List<Atvffarq> findByYearAndMonth(int year, int month) {
+        String monthStr = month < 10 ? "0" + month : String.valueOf(month);
+        return findByYearMonthString(year + "-" + monthStr);
+    }
+
+    
+    
+    @Query("SELECT a FROM Atvffarq a WHERE a.aqcopr = :copr AND a.aqcodo = :codo AND SUBSTRING(a.aqfear, 1, 4) = :ano")
+    List<Atvffarq> findByAqcoprAndAqcodoAndAno(@Param("copr") String copr, @Param("codo") String codo, @Param("ano") String ano);
+    
+    @Query("SELECT a FROM Atvffarq a WHERE a.aqcdsu = :sucursal AND a.aqcopr = :copr AND a.aqcodo = :codo")
+    List<Atvffarq> findBySucursalAndCoprAndCodo(@Param("sucursal") Integer sucursal, @Param("copr") String copr, @Param("codo") String codo);
+    
+    @Query("SELECT a FROM Atvffarq a WHERE a.aqcdsu = :sucursal AND a.aqcopr = :copr AND a.aqcodo = :codo AND SUBSTRING(a.aqfear, 6, 2) = :mes AND SUBSTRING(a.aqfear, 1, 4) = :ano")
+    List<Atvffarq> findBySucursalAndCoprAndCodoAndMesAno(@Param("sucursal") Integer sucursal, @Param("copr") String copr, @Param("codo") String codo, @Param("mes") String mes, @Param("ano") String ano);
+
+    List<Atvffarq> findByAqcoprAndAqcodoAndAqfearBetween(String aqcopr, String aqcodo, String aqfearAfter, String aqfearBefore);
+}

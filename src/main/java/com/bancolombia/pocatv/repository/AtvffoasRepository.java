@@ -1,5 +1,7 @@
 package com.bancolombia.pocatv.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -29,5 +31,14 @@ public interface AtvffoasRepository extends JpaRepository<Atvffoas, AtvffoasId> 
 	                                         @Param("ano") Integer ano,
 	                                         @Param("mes") Integer mes,
 	                                         Pageable pageable);
+	
+	// Filtrar por año (oaano) solamente
+	@Query(value = "select * from atvffoas oas where oas.oaano = :oaano", nativeQuery = true)
+	List<Atvffoas> findAnno(Integer oaano);
+	
+	
+	// Filtrar por año (anno) (usuario) solamente
+	@Query(value = "select oas.* from atvffuser_xbknam ax join atvffoas oas on ax.xnnmky = oas.oaxnnmky where ax.xuuser = :fuser and oas.oaano = :anno", nativeQuery = true)
+	List<Atvffoas> findAnnoUser(@Param("anno") Integer anno, @Param("fuser") String usuario);
 
 }

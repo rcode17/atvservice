@@ -8,16 +8,19 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Data
-@Embeddable
-public class AtvffPdsId implements Serializable  {
+public class AtvffPdsId implements Serializable {
+	private Integer xscosu;
+	private String xscopr;
+	private String xscodo;
 
-	@Column(name = "xscosu", nullable = false)
-	private Integer xsCosu;
-	
-	@Column(name = "xscopr", nullable = false, length = 2)
-	private String xsCopr;
-	
-	@Column(name = "xscodo", nullable = false, length = 3)
-	private String xsCodo;
-	
+	// Constructor vacío
+	public AtvffPdsId() {}
+
+	// Constructor con parámetros
+	public AtvffPdsId(Integer xscosu, String xscopr, String xscodo) {
+		this.xscosu = xscosu;
+		this.xscopr = xscopr;
+		this.xscodo = xscodo;
+	}
+
 }

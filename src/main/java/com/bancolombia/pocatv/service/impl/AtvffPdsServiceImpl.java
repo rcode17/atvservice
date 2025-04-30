@@ -40,7 +40,7 @@ public class AtvffPdsServiceImpl implements AtvffPdsService{
 
 	@Override
 	public List<AtvffPds> findByIdXsCosu(Integer xscosu) {
-		return repository.findByIdXsCosu(xscosu);
+		return repository.findByIdXscosu(xscosu);
 	}
 	
 }

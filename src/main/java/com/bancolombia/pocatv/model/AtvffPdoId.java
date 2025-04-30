@@ -11,15 +11,14 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Embeddable
 public class AtvffPdoId implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
     @Column(name = "xpcopr", length = 2, nullable = false)
-    private String xpCopr;
+    private String xpcopr;
 
     @Column(name = "xpcodo", length = 3, nullable = false)
-    private String xpCodo;
+    private String xpcodo;
 
 }

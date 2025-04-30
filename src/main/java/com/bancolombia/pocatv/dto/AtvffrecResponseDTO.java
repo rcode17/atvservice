@@ -20,5 +20,7 @@ public class AtvffrecResponseDTO {
     private Integer rccdsu;
     private Integer rccdsuf;
     private String rcrech;
+    private String rcprcu;
+    private String rcpear;
 
 }
