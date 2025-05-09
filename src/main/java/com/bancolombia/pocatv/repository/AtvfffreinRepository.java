@@ -20,4 +20,14 @@ public interface AtvfffreinRepository extends JpaRepository<Atvfffrein, String> 
     List<Atvfffrein> findByAreaContaining(String area);
 
     List<Atvfffrein> findByMessubfAndAnosubf(Integer mes, Integer ano);
+    
+    List<Atvfffrein> findByAnosubfAndMessubf(Integer ano, Integer mes);
+    
+    List<Atvfffrein> findByResp(String responsable);
+    
+    void deleteByResp(String responsable);
+    
+    Optional<Atvfffrein> findById(String id);
+    
+    List<Atvfffrein> findAll();
 }

@@ -23,7 +23,7 @@ public class AtvffPdo {
     private String xpdsdo; // Definido como bpchar(25)
 
     @Column(name = "xpcta", nullable = false)
-    private Double xpcta; // Definido como numeric(12)
+    private BigDecimal xpcta; // Definido como numeric(12)
 
     @Column(name = "xpstdo", nullable = false)
     private String xpstdo; // Definido como bpchar(1)
@@ -56,11 +56,11 @@ public class AtvffPdo {
         this.xpdsdo = xpdsdo;
     }
 
-    public Double getXpcta() {
+    public BigDecimal getXpcta() {
         return xpcta;
     }
 
-    public void setXpcta(Double xpcta) {
+    public void setXpcta(BigDecimal xpcta) {
         this.xpcta = xpcta;
     }
 

@@ -206,7 +206,7 @@ public class AtvrcargueServiceImpl implements AtvrcargueService{
         Atvfftem destino = new Atvfftem();
         
         // Mapear campos comunes
-        destino.setTmfear(dataTransformationUtil.convertirBigDecimalAString(origen.getTmfear()));
+        //destino.setTmfear(dataTransformationUtil.convertirBigDecimalAString(origen.getTmfear()));
         destino.setTmsuc(origen.getTmsuc());
         destino.setTmcdsu(dataTransformationUtil.convertirBigDecimalAInteger(origen.getTmcdsu()));
         destino.setTmcdsuf(dataTransformationUtil.convertirBigDecimalAInteger(origen.getTmcdsuf()));
@@ -393,7 +393,7 @@ public class AtvrcargueServiceImpl implements AtvrcargueService{
         Atvfftem destino = new Atvfftem();
         
         // Mapear campos comunes
-        destino.setTmfear(dataTransformationUtil.convertirBigDecimalAString(origen.getTmfear()));
+        //destino.setTmfear(dataTransformationUtil.convertirBigDecimalAString(origen.getTmfear()));
         destino.setTmsuc(origen.getTmsuc());
         destino.setTmcdsu(dataTransformationUtil.convertirBigDecimalAInteger(origen.getTmcdsu()));
         destino.setTmcdsuf(dataTransformationUtil.convertirBigDecimalAInteger(origen.getTmcdsuf()));

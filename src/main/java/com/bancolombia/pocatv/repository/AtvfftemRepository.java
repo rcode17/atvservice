@@ -15,7 +15,7 @@ public interface AtvfftemRepository extends JpaRepository<Atvfftem, Long> {
     List<Atvfftem> findByTmsuc(String tmsuc);
     
     // Método para encontrar registros por fecha
-    List<Atvfftem> findByTmfear(String tmfear);
+    //List<Atvfftem> findByTmfear(String tmfear);
     
     // Método para contar registros por estado
     long countByTmres(String tmres);

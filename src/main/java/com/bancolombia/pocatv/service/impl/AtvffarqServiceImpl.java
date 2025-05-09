@@ -8,6 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.bancolombia.pocatv.utils.ClrpfmTablesUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -21,6 +25,8 @@ import com.bancolombia.pocatv.dto.IncumplimientoDTO;
 import com.bancolombia.pocatv.dto.ResponseIncumplimientoDTO;
 import com.bancolombia.pocatv.dto.ArqueoResumenDTO;
 import com.bancolombia.pocatv.dto.ArqueoTotalesDTO;
+import com.bancolombia.pocatv.dto.EstadisticaProductoDTO;
+import com.bancolombia.pocatv.dto.EstadisticaTotalAreaDTO;
 import com.bancolombia.pocatv.model.AtvffPdo;
 import com.bancolombia.pocatv.model.AtvffPdoId;
 import com.bancolombia.pocatv.model.AtvffPds;
@@ -32,6 +38,8 @@ import com.bancolombia.pocatv.model.Atvffcrd;
 import com.bancolombia.pocatv.model.AtvffcrdId;
 import com.bancolombia.pocatv.model.Atvffmd;
 import com.bancolombia.pocatv.model.AtvffmdId;
+import com.bancolombia.pocatv.model.Gidbl;
+import com.bancolombia.pocatv.model.Gidbll;
 import com.bancolombia.pocatv.model.Xbknam;
 import com.bancolombia.pocatv.repository.AtvffFreRepository;
 import com.bancolombia.pocatv.repository.AtvffPdoRepository;
@@ -39,11 +47,17 @@ import com.bancolombia.pocatv.repository.AtvffPdsRepository;
 import com.bancolombia.pocatv.repository.AtvffUserRepository;
 import com.bancolombia.pocatv.repository.AtvffapaRepository;
 import com.bancolombia.pocatv.repository.AtvffarqRepository;
+import com.bancolombia.pocatv.repository.AtvffcharpRepository;
+import com.bancolombia.pocatv.repository.AtvffcharqRepository;
+import com.bancolombia.pocatv.repository.AtvffcharsRepository;
+import com.bancolombia.pocatv.repository.AtvffchsalRepository;
 import com.bancolombia.pocatv.repository.AtvffcrdRepository;
 import com.bancolombia.pocatv.repository.AtvffmdRepository;
+import com.bancolombia.pocatv.repository.GidblRepository;
+import com.bancolombia.pocatv.repository.GidbllRepository;
 import com.bancolombia.pocatv.repository.XbknamRepository;
 import com.bancolombia.pocatv.service.AtvffarqService;
-
+import com.bancolombia.pocatv.utils.CalculadoraEstadistica;
 import com.bancolombia.pocatv.utils.CalcularPorcentajes;
 
 import jakarta.transaction.Transactional;
@@ -59,7 +73,7 @@ public class AtvffarqServiceImpl implements AtvffarqService {
 
 	@Autowired
 	private AtvffFreRepository atvffFreRepository;
-	
+
 	@Autowired
 	private AtvffPdoRepository atvffpdoRepository;
 
@@ -68,24 +82,52 @@ public class AtvffarqServiceImpl implements AtvffarqService {
 
 	@Autowired
 	private AtvffUserRepository atvffuserRepository;
-	
-	 @Autowired
-	 private AtvffmdRepository atvffmdRepository;
-	  
-	 @Autowired
-	 private XbknamRepository xbknamRepository;
-	 
-	 @Autowired
-	 private AtvffapaRepository atvffapaRepository;
-	
-	@Autowired
-	private CalcularPorcentajes calcularPorcentajes;
 
 	@Autowired
-	public AtvffarqServiceImpl(AtvffarqRepository atvffarqRepository,AtvffcrdRepository atvffcrdRepository) {
+	private AtvffmdRepository atvffmdRepository;
+
+	@Autowired
+	private XbknamRepository xbknamRepository;
+
+	@Autowired
+	private AtvffapaRepository atvffapaRepository;
+
+	@Autowired
+	private CalcularPorcentajes calcularPorcentajes;
+	
+	@Autowired
+	private GidbllRepository gidbllRepository;
+
+	@Autowired
+	private AtvffcharqRepository atvffcharqRepository;
+	
+	@Autowired
+	private AtvffchsalRepository atvffchsalRepository;
+	
+	@Autowired
+	private AtvffcharpRepository atvffcharpRepository;
+	
+	@Autowired
+	private AtvffcharsRepository atvffcharsRepository;
+
+	@Autowired
+	private ClrpfmTablesUtils clrpfmTablesUtils;
+	
+	@Autowired
+    private CalculadoraEstadistica calculadora;
+
+	@Autowired
+	public AtvffarqServiceImpl(AtvffarqRepository atvffarqRepository,AtvffcrdRepository atvffcrdRepository, 
+			AtvffcharqRepository atvffcharqRepository, AtvffchsalRepository atvffchsalRepository, 
+			AtvffcharpRepository atvffcharpRepository,AtvffcharsRepository atvffcharsRepository) {
 		this.atvffarqRepository = atvffarqRepository;
 		this.atvffcrdRepository = atvffcrdRepository;
+		this.atvffcharqRepository = atvffcharqRepository;
+	    this.atvffchsalRepository = atvffchsalRepository;
+	    this.atvffcharpRepository = atvffcharpRepository;
+	    this.atvffcharsRepository = atvffcharsRepository;
 	}
+    private static final Logger logger = LoggerFactory.getLogger(AtvffarqServiceImpl.class);
 	
     
 
@@ -566,10 +608,11 @@ public class AtvffarqServiceImpl implements AtvffarqService {
 	                    
 	                    String anoStr = String.format("%02d",ano);
 	                    String mesStr = String.valueOf(mes);
+	                    String fecha1 = "2023-03-15";
 	                    
 	                    // Obtener arqueos para este producto en el mes y año especificados
 	                    List<Atvffarq> arqueos = atvffarqRepository.findArqueosPorMes(
-	                    	codigoSucursal, codigoProducto, codigoDocumento, mesStr, anoStr
+	                    	codigoSucursal, codigoProducto, codigoDocumento, fecha1
 	                    );
 	                    
 	                    // Buscar información de la sucursal/área
@@ -916,6 +959,292 @@ public class AtvffarqServiceImpl implements AtvffarqService {
 	    
 	    return resumen;
 	}
+	
+	
+	 @Override
+	    @Transactional
+	    public String limpiarArchivosArqueo() {
+	 
+   
+	        try {
+	            // Limpiar archivos (equivalente a CLRPFM en RPG)
+	            logger.info("Limpiando archivo ATVFFCHARQ");
+	            atvffcharqRepository.deleteAll();
+	            
+	            logger.info("Limpiando archivo ATVFFCHSAL");
+	            atvffchsalRepository.deleteAll();
+	            
+	            logger.info("Limpiando archivo ATVFFCHARP");
+	            atvffcharpRepository.deleteAll();
+	            
+	            logger.info("Limpiando archivo ATVFFCHARS");
+	            atvffcharsRepository.deleteAll();
+	            
+	            logger.info("Limpieza de archivos completada exitosamente");
+	            return "Limpieza de archivos de arqueo completada exitosamente ";
+	        } catch (Exception e) {
+	            logger.error("Error al limpiar archivos de arqueo: {}", e.getMessage(), e);
+	            throw new RuntimeException("Error al limpiar archivos de arqueo: " + e.getMessage(), e);
+	        }
+	    }
+
+
+
+	@Override
+	public void actualizarArqueos() {
+		
+		try {
+			clrpfmTablesUtils.clearAtvfftem();
+			List<Atvffarq> arqueos = atvffarqRepository.findAll();
+		    for (Atvffarq arqueo : arqueos) {
+		        try {
+		       
+		            String fechaArqueo = arqueo.getAqfear();
+		            LocalDate fechaFormateada = LocalDate.parse(fechaArqueo);
+
+		            // Buscar producto correspondiente
+		            AtvffPdo producto = atvffpdoRepository.findByXpcoprAndXpcodo(
+		                arqueo.getAqcopr(), arqueo.getAqcodo());
+
+		            if (producto != null && "1".equals(producto.getXpstdo())) {
+		                String numeroCuenta = producto.getXpcta().toString();
+
+		                // Buscar saldo
+		                Gidbll saldo = gidbllRepository.findByGxamdtAndGxnoacAndGxdtdy(
+		                    arqueo.getAqsfar(), numeroCuenta, fechaFormateada);
+
+		                if (saldo != null) {
+		                    BigDecimal saldoArchivo = saldo.getGxamdt();
+		                    BigDecimal saldoArqueo = arqueo.getAqsfar();
+		                    BigDecimal diferencia = saldoArchivo.subtract(saldoArqueo);
+
+		                    arqueo.setAqres(diferencia.abs().compareTo(BigDecimal.ONE) <= 0 ? "C" : "D");
+		                    arqueo.setAqdif(diferencia);
+		                    atvffarqRepository.save(arqueo);
+		                }
+		            }
+
+		        } catch (Exception e) {
+		            // Aquí puedes usar un logger en lugar de printStackTrace
+		            System.err.println("Error procesando arqueo sucursal: " + arqueo.getAqsuc() + " - " + e.getMessage());
+		            e.printStackTrace();
+		        }
+		    }
+	    } catch (Exception e) {
+	        // Log del error general
+	        System.err.println("Error general al actualizar arqueos: " + e.getMessage());
+	        throw new IllegalArgumentException("Error al actualizar arqueos", e);
+	    }
+		
+	    
+	}
+
+	 @Override
+	    public List<EstadisticaProductoDTO> obtenerEstadisticasPorProducto(String usuario, Integer ano, Integer sucursal) {
+	        List<EstadisticaProductoDTO> resultado = new ArrayList<>();
+	        
+	        // Obtener todos los productos-documentos para la sucursal
+	        List<AtvffPds> productosSucursal = atvffpdsRepository.findByIdXscosu(sucursal);
+	        
+	        if (productosSucursal.isEmpty()) {
+	            throw new IllegalArgumentException("No hay productos configurados para la sucursal: " + sucursal);
+	        }
+	        
+	        // Para cada producto-documento, calcular estadísticas mensuales
+	        for (AtvffPds pds : productosSucursal) {
+	            String codigoProducto = pds.getXscopr();
+	            String codigoDocumento = pds.getXscodo();
+	            
+	            // Obtener información del producto-documento
+	            AtvffPdo pdo = atvffpdoRepository.findByXpcoprAndXpcodo(codigoProducto, codigoDocumento);
+	            
+	            if (pdo == null) {
+	                continue; // Saltar si no existe el producto-documento
+	            }
+	            
+	            // Obtener frecuencia de arqueo
+	            AtvffFre fre = atvffFreRepository.findById_FxCoprAndId_FxCodo(codigoProducto, codigoDocumento);
+	            
+	            if (fre == null) {
+	                continue; // Saltar si no hay configuración de frecuencia
+	            }
+	            
+	            // Crear DTO para este producto
+	            EstadisticaProductoDTO dto = new EstadisticaProductoDTO();
+	            dto.setCodPro(Integer.valueOf(codigoProducto));
+	            dto.setCodDoc(Integer.valueOf(codigoDocumento));
+	            dto.setDocument(pdo.getXpdsdo());
+	            
+	            // Calcular estadísticas para cada mes
+	            int totalAnual = 0;
+	            int mesesConDatos = 0;
+	            
+	            // Enero
+	            int calidad = calculadora.calcularCalidadMes(sucursal, codigoProducto, codigoDocumento, ano,(short) 1, fre);
+	            if (calidad > 0) {
+	                dto.setEnero(calidad);
+	                totalAnual += calidad;
+	                mesesConDatos++;
+	            }
+	            
+	            // Febrero
+	            calidad = calculadora.calcularCalidadMes(sucursal, codigoProducto, codigoDocumento, ano,(short) 2, fre);
+	            if (calidad > 0) {
+	                dto.setFeb(calidad);
+	                totalAnual += calidad;
+	                mesesConDatos++;
+	            }
+	            
+	            // Marzo
+	            calidad = calculadora.calcularCalidadMes(sucursal, codigoProducto, codigoDocumento, ano,(short) 3, fre);
+	            if (calidad > 0) {
+	                dto.setMarzo(calidad);
+	                totalAnual += calidad;
+	                mesesConDatos++;
+	            }
+	            
+	            // Abril
+	            calidad = calculadora.calcularCalidadMes(sucursal, codigoProducto, codigoDocumento, ano,(short) 4, fre);
+	            if (calidad > 0) {
+	                dto.setAbril(calidad);
+	                totalAnual += calidad;
+	                mesesConDatos++;
+	            }
+	            
+	            // Mayo
+	            calidad = calculadora.calcularCalidadMes(sucursal, codigoProducto, codigoDocumento, ano,(short) 5, fre);
+	            if (calidad > 0) {
+	                dto.setMayo(calidad);
+	                totalAnual += calidad;
+	                mesesConDatos++;
+	            }
+	            
+	            // Junio
+	            calidad = calculadora.calcularCalidadMes(sucursal, codigoProducto, codigoDocumento, ano,(short) 6, fre);
+	            if (calidad > 0) {
+	                dto.setJunio(calidad);
+	                totalAnual += calidad;
+	                mesesConDatos++;
+	            }
+	            
+	            // Julio
+	            calidad = calculadora.calcularCalidadMes(sucursal, codigoProducto, codigoDocumento, ano,(short) 7, fre);
+	            if (calidad > 0) {
+	                dto.setJulio(calidad);
+	                totalAnual += calidad;
+	                mesesConDatos++;
+	            }
+	            
+	            // Agosto
+	            calidad = calculadora.calcularCalidadMes(sucursal, codigoProducto, codigoDocumento, ano,(short) 8, fre);
+	            if (calidad > 0) {
+	                dto.setAgosto(calidad);
+	                totalAnual += calidad;
+	                mesesConDatos++;
+	            }
+	            
+	            // Septiembre
+	            calidad = calculadora.calcularCalidadMes(sucursal, codigoProducto, codigoDocumento, ano,(short) 9, fre);
+	            if (calidad > 0) {
+	                dto.setSep(calidad);
+	                totalAnual += calidad;
+	                mesesConDatos++;
+	            }
+	            
+	            // Octubre
+	            calidad = calculadora.calcularCalidadMes(sucursal, codigoProducto, codigoDocumento, ano,(short) 10, fre);
+	            if (calidad > 0) {
+	                dto.setOctubre(calidad);
+	                totalAnual += calidad;
+	                mesesConDatos++;
+	            }
+	            
+	            // Noviembre
+	            calidad = calculadora.calcularCalidadMes(sucursal, codigoProducto, codigoDocumento, ano,(short) 11, fre);
+	            if (calidad > 0) {
+	                dto.setNov(calidad);
+	                totalAnual += calidad;
+	                mesesConDatos++;
+	            }
+	            
+	            // Diciembre
+	            calidad = calculadora.calcularCalidadMes(sucursal, codigoProducto, codigoDocumento, ano,(short) 12, fre);
+	            if (calidad > 0) {
+	                dto.setDic(calidad);
+	                totalAnual += calidad;
+	                mesesConDatos++;
+	            }
+	            
+	            // Calcular promedio anual
+	            if (mesesConDatos > 0) {
+	                dto.setPromA(totalAnual / mesesConDatos);
+	            }
+	            
+	            resultado.add(dto);
+	        }
+	        
+	        return resultado;
+	    }
+	    
+	    @Override
+	    public EstadisticaTotalAreaDTO obtenerTotalesEstadisticas(String usuario, Integer ano, Integer sucursal) {
+	        List<EstadisticaProductoDTO> estadisticas = obtenerEstadisticasPorProducto(usuario, ano, sucursal);
+	        
+	        if (estadisticas.isEmpty()) {
+	            throw new IllegalArgumentException("No hay datos de estadísticas para calcular totales");
+	        }
+	        
+	        EstadisticaTotalAreaDTO totales = new EstadisticaTotalAreaDTO();
+	        int contadorProductos = 0;
+	        
+	        int totalEnero = 0, totalFebrero = 0, totalMarzo = 0, totalAbril = 0;
+	        int totalMayo = 0, totalJunio = 0, totalJulio = 0, totalAgosto = 0;
+	        int totalSeptiembre = 0, totalOctubre = 0, totalNoviembre = 0, totalDiciembre = 0;
+	        
+	        for (EstadisticaProductoDTO est : estadisticas) {
+	            contadorProductos++;
+	            
+	            if (est.getEnero() != null) totalEnero += est.getEnero();
+	            if (est.getFeb() != null) totalFebrero += est.getFeb();
+	            if (est.getMarzo() != null) totalMarzo += est.getMarzo();
+	            if (est.getAbril() != null) totalAbril += est.getAbril();
+	            if (est.getMayo() != null) totalMayo += est.getMayo();
+	            if (est.getJunio() != null) totalJunio += est.getJunio();
+	            if (est.getJulio() != null) totalJulio += est.getJulio();
+	            if (est.getAgosto() != null) totalAgosto += est.getAgosto();
+	            if (est.getSep() != null) totalSeptiembre += est.getSep();
+	            if (est.getOctubre() != null) totalOctubre += est.getOctubre();
+	            if (est.getNov() != null) totalNoviembre += est.getNov();
+	            if (est.getDic() != null) totalDiciembre += est.getDic();
+	        }
+	        
+	        // Calcular promedios
+	        if (contadorProductos > 0) {
+	            totales.setEnt(totalEnero / contadorProductos);
+	            totales.setFet(totalFebrero / contadorProductos);
+	            totales.setMart(totalMarzo / contadorProductos);
+	            totales.setAbt(totalAbril / contadorProductos);
+	            totales.setMayt(totalMayo / contadorProductos);
+	            totales.setJunt(totalJunio / contadorProductos);
+	            totales.setJult(totalJulio / contadorProductos);
+	            totales.setAgt(totalAgosto / contadorProductos);
+	            totales.setSet(totalSeptiembre / contadorProductos);
+	            totales.setOct(totalOctubre / contadorProductos);
+	            totales.setNt(totalNoviembre / contadorProductos);
+	            totales.setDit(totalDiciembre / contadorProductos);
+	        }
+	        
+	        return totales;
+	    }
+	    
+	    @Override
+	    public String obtenerNombreSucursal(Integer sucursal) {
+	        Xbknam sucursalInfo = xbknamRepository.findByXnnmky(sucursal)
+	            .orElseThrow(() -> new IllegalArgumentException("No se encontró información para la sucursal: " + sucursal));
+
+	        return sucursalInfo.getXnname();
+	    }
+	
 
 }
 

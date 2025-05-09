@@ -21,4 +21,6 @@ public interface AtvffegaRepository extends JpaRepository<Atvffega, AtvffegaId> 
             @Param("mes") Integer mes, 
             @Param("anio") Integer anio, 
             @Param("usuario") String usuario);
+
+    void deleteByEgmesinAndEganoin(Integer egmesin, Integer eganoin);
 }

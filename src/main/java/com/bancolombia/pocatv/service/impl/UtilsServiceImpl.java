@@ -4,8 +4,10 @@ import org.springframework.stereotype.Service;
 
 import com.bancolombia.pocatv.dto.FechaMesAnioRequestDTO;
 import com.bancolombia.pocatv.dto.FechaResponse;
+import com.bancolombia.pocatv.dto.FechaTransformResponseDTO;
 import com.bancolombia.pocatv.service.UtilsService;
 import com.bancolombia.pocatv.utils.ValidateFechaUtil;
+import com.bancolombia.pocatv.utils.DataTransformationUtil;
 
 @Service
 public class UtilsServiceImpl implements UtilsService{
@@ -26,6 +28,11 @@ public class UtilsServiceImpl implements UtilsService{
         
         return response;
     }
+
+	@Override
+	public FechaTransformResponseDTO restarUnDia(String fecha) {
+		return DataTransformationUtil.restarUnDia(fecha);
+	}
 	
 
 }

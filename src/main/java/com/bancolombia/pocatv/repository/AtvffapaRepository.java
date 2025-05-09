@@ -1,5 +1,6 @@
 package com.bancolombia.pocatv.repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,4 +22,6 @@ public interface AtvffapaRepository extends JpaRepository<Atvffapa, AtvffapaId> 
     
     @Query("SELECT a FROM Atvffapa a WHERE a.apcodsuc = :codsuc")
     List<Atvffapa> findByCodsuc(@Param("codsuc") Integer codsuc);
+
+    boolean existsByApanoAndApmesAndApcodsucAndApcoprAndApcodoAndApfear(Integer apano, Integer apmes, Integer apcodsuc, String apcopr, String apcodo, LocalDate apfear);
 }

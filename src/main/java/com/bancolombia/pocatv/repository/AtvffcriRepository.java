@@ -1,6 +1,7 @@
 package com.bancolombia.pocatv.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -32,4 +33,8 @@ public interface AtvffcriRepository extends JpaRepository<AtvffCri, AtvffCriId> 
             @Param("crano") Integer crano,
             @Param("crmes") Integer crmes,
             @Param("crcodsuc") Integer crcodsuc);
+    // Corregir el método para usar la clave primaria compuesta
+    Optional<AtvffCri> findByIdCranoAndIdCrmesAndCrconAndIdCrcodsucAndIdCrcoprAndIdCrcodo(
+            Integer crano, Integer crmes, Integer crcon, Integer crcodsuc, String crcopr, String crcodo
+    );
 }

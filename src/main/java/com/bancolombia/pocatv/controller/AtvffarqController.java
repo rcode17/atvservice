@@ -14,6 +14,9 @@ import com.bancolombia.pocatv.dto.ArqueoDescuadradoDTO;
 import com.bancolombia.pocatv.dto.IncumplimientoDTO;
 import com.bancolombia.pocatv.dto.ArqueoResumenDTO;
 import com.bancolombia.pocatv.dto.ArqueoTotalesDTO;
+import com.bancolombia.pocatv.dto.ErrorResponse;
+import com.bancolombia.pocatv.dto.EstadisticaProductoDTO;
+import com.bancolombia.pocatv.dto.EstadisticaTotalAreaDTO;
 import com.bancolombia.pocatv.dto.ArqueoDTO;
 import com.bancolombia.pocatv.dto.ResponseDTO;
 import com.bancolombia.pocatv.dto.ResponseIncumplimientoDTO;
@@ -21,6 +24,7 @@ import com.bancolombia.pocatv.model.Atvffcrd;
 import com.bancolombia.pocatv.service.AtvffarqService;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -199,6 +203,73 @@ public class AtvffarqController {
 	                usuario, pro, doc, des, sucursal, nomSuc, ano, mes);
 	        
 	        return ResponseEntity.ok(resumen);
+	    }
+	    
+	    
+
+	    @GetMapping("/detalle-arqueos")
+	    public ResponseEntity<ResponseIncumplimientoDTO<List<IncumplimientoDTO>>> obtenerDetalleArqueosSucursal(
+	            @RequestParam Integer codigoSucursal,
+	            @RequestParam Integer mes,
+	            @RequestParam Integer ano,
+	            @RequestParam String usuario) {
+
+	        ResponseIncumplimientoDTO<List<IncumplimientoDTO>> response = atvffarqService.obtenerDetalleArqueosSucursal(codigoSucursal, mes, ano, usuario);
+	        
+	        return ResponseEntity.ok(response);
+	    }
+	    
+	    @PostMapping("/actualizarArqueos")
+	    public ResponseEntity<ErrorResponse> actualizarArqueos() {
+	            atvffarqService.actualizarArqueos();
+	            return ResponseEntity.ok(new ErrorResponse(200, "Actualización exitosa"));
+	    }
+	    
+	    /**
+	     * Endpoint para limpiar los archivos de arqueo
+	     * @param entorno El entorno de trabajo (NACIONAL, DDS, CALIDAD)
+	     * @return Mensaje de confirmación
+	     */
+	    @DeleteMapping("/limpiar")
+	    public ResponseEntity<String> limpiarArchivosArqueo() {
+	        String resultado = atvffarqService.limpiarArchivosArqueo();
+	        return ResponseEntity.ok(resultado);
+	    }
+	    
+	    
+	    
+	    @GetMapping("/calidad-sucursal")
+	    public ResponseEntity<?> obtenerEstadisticasCalidad(
+	            @RequestParam String usuario,
+	            @RequestParam Integer ano,
+	            @RequestParam Integer sucursal) {
+	        
+	        try {
+	            List<EstadisticaProductoDTO> estadisticas = atvffarqService.obtenerEstadisticasPorProducto(
+	                usuario, ano, sucursal);
+	            
+	            EstadisticaTotalAreaDTO totales = atvffarqService.obtenerTotalesEstadisticas(
+	                usuario, ano, sucursal);
+	            
+	            String nombreSucursal = atvffarqService.obtenerNombreSucursal(sucursal);
+	            
+	            Map<String, Object> response = new HashMap<>();
+	            response.put("estadisticas", estadisticas);
+	            response.put("totales", totales);
+	            response.put("sucursal", nombreSucursal);
+	            response.put("ano", ano);
+	            
+	            return ResponseEntity.ok(response);
+	            
+	        } catch (IllegalArgumentException e) {
+	            Map<String, Object> errorResponse = new HashMap<>();
+	            errorResponse.put("error", e.getMessage());
+	            return ResponseEntity.badRequest().body(errorResponse);
+	        } catch (Exception e) {
+	            Map<String, Object> errorResponse = new HashMap<>();
+	            errorResponse.put("error", "Error al procesar la solicitud: " + e.getMessage());
+	            return ResponseEntity.internalServerError().body(errorResponse);
+	        }
 	    }
     
 }

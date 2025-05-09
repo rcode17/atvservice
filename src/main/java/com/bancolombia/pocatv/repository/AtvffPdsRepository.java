@@ -23,7 +23,7 @@ public interface AtvffPdsRepository extends JpaRepository<AtvffPds, AtvffPdsId> 
 	List<AtvffPds> findByIdXscosu(@Param("xscosu") Integer xscosu);
 
 
-	AtvffPds findByXscoprAndXscodo(String xscopr, String xscodo);
+	List<AtvffPds> findByXscoprAndXscodo(String xscopr, String xscodo);
 	
     Optional<AtvffPds> findByXscosuAndXscoprAndXscodo(
             Integer xscosu, 
@@ -36,4 +36,5 @@ public interface AtvffPdsRepository extends JpaRepository<AtvffPds, AtvffPdsId> 
     
     
 
+	boolean existsByXscosuAndXscoprAndXscodo(Integer xscosu, String xscopr, String xscodo);
 }

@@ -3,6 +3,7 @@ package com.bancolombia.pocatv.service.impl;
 import java.sql.Date;
 import java.util.List;
 
+import com.bancolombia.pocatv.utils.ClrpfmTablesUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,11 +27,16 @@ public class AtvrRepServiceImpl implements AtvrRepService {
 
     @Autowired
     private AtvfftemRepository atvfftemRepository;
+
+	@Autowired
+	private ClrpfmTablesUtils clrpfmTablesUtils;
+
     
     @Override
     @Transactional
     public int procesarRechazos(String usuario, String mesInicio, String diaInicio, String anoInicio, 
             String mesFin, String diaFin, String anoFin) {
+		clrpfmTablesUtils.clearAtvfftem();
 
 		String fechaInicioStr = String.format("%s-%s-%s", anoInicio, mesInicio, diaInicio);
 		String fechaFinStr = String.format("%s-%s-%s", anoFin, mesFin, diaFin);
@@ -48,7 +54,7 @@ public class AtvrRepServiceImpl implements AtvrRepService {
 			Atvfftem temporal = new Atvfftem();
 		
 			// Mapear todos los campos del rechazo al temporal
-			temporal.setTmfear(rechazo.getRcfere());
+			//temporal.setTmfear(rechazo.getRcfere());
 			temporal.setTmsuc(rechazo.getRcsuc());
 			temporal.setTmcdsu(rechazo.getRccdsu());
 			temporal.setTmcdsuf(rechazo.getRccdsuf());

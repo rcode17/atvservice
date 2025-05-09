@@ -35,5 +35,7 @@ public interface AtvffoasService {
      * @return Lista de GrupoResponse
      */
     Page<GrupoResponseDTO> obtenerDatosPorAnoUserDominio(Integer anno, String fuser, String dominio, Pageable pageable);
+    
+    void procesarActualizacion(Integer mes, Integer ano);
 
 }

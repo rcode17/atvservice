@@ -1,16 +1,21 @@
 package com.bancolombia.pocatv.service.impl;
 
 import com.bancolombia.pocatv.service.AtvRmdService;
+import com.bancolombia.pocatv.service.AtvrmmeService; // Servicio de ATVRMME
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
 @Service
-public class AtvRmdServiceImpl implements AtvRmdService{
+public class AtvRmdServiceImpl implements AtvRmdService {
 
     private static final Logger logger = LoggerFactory.getLogger(AtvRmdServiceImpl.class);
+
+    @Autowired
+    private AtvrmmeService atvrmmeService; // Inyectamos el servicio de ATVRMME
 
     @Override
     public boolean validarAnio(Integer anio) {
@@ -48,9 +53,8 @@ public class AtvRmdServiceImpl implements AtvRmdService{
             // Validar el año
             validarAnio(anio);
 
-            // Aquí iría la lógica equivalente a la llamada a ATVRMME
-            // Simulamos la llamada a otro servicio que podría fallar
-            return llamarServicioExterno(anio);
+            // Llamar al servicio de ATVRMME
+            return llamarServicioAtvrmme(anio);
         } catch (IllegalArgumentException e) {
             // Propagamos excepciones de validación
             throw e;
@@ -60,16 +64,24 @@ public class AtvRmdServiceImpl implements AtvRmdService{
         }
     }
 
-    private Integer llamarServicioExterno(Integer anio) {
+    private Integer llamarServicioAtvrmme(Integer anio) {
         try {
-            // Simulación de llamada a servicio externo (equivalente a CALL ATVRMME)
-            logger.info("Llamando a servicio externo con año: {}", anio);
-            // Aquí podría ir una llamada a otro servicio o microservicio
-            return 1; // Equivalente a SALIDA = 1
+            // Llamada real al servicio ATVRMME
+            logger.info("Llamando al servicio ATVRMME con año: {}", anio);
+
+            // Verificamos si el año es válido según las reglas de ATVRMME
+            boolean esValido = atvrmmeService.validarAno(anio);
+
+            if (!esValido) {
+                throw new IllegalArgumentException("Año inválido según criterios de ATVRMME");
+            }
+
+            // Aquí podríamos realizar otras operaciones necesarias
+
+            return 1; // Equivalente a SALIDA = 1 (éxito)
         } catch (Exception e) {
-            logger.error("Error al llamar al servicio externo: {}", e.getMessage(), e);
-            throw new RuntimeException("Error al comunicarse con el sistema externo", e);
+            logger.error("Error al llamar al servicio ATVRMME: {}", e.getMessage(), e);
+            throw new RuntimeException("Error al comunicarse con el servicio ATVRMME", e);
         }
     }
-	
 }

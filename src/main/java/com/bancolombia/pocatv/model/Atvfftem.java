@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDate;
 
 @Data
 @Entity
@@ -24,7 +26,7 @@ public class Atvfftem {
 
     @Id
     @Column(name = "tmfear")
-    private String tmfear;
+    private LocalDate tmfear;
 
     @Column(name = "tmsuc", nullable = false)
     private String tmsuc;
@@ -228,11 +230,11 @@ public class Atvfftem {
         this.tmcodo = tmcodo;
     }
 
-    public String getTmfear() {
+    public LocalDate getTmfear() {
         return tmfear;
     }
 
-    public void setTmfear(String tmfear) {
+    public void setTmfear(LocalDate tmfear) {
         this.tmfear = tmfear;
     }
 

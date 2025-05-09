@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -77,6 +78,20 @@ public class AtvffoasController {
     		Pageable pageable) {
     	Page<GrupoResponseDTO> respuesta = atvffoasService.obtenerDatosPorAnoUserDominio(anno, fuser, dominio, pageable);
         return ResponseEntity.ok(respuesta);
+    }
+    
+    /**
+     * ATVROAS2 
+     * Proceso de actualización del archivo ATVFFOAS con sus respectivos calculos de porcentajes
+     */
+    @PostMapping("/procesar")
+    public ResponseEntity<String> procesarActualizacion(
+            @RequestParam Integer mes,
+            @RequestParam Integer ano) {
+        
+        	atvffoasService.procesarActualizacion(mes, ano);
+            return ResponseEntity.ok("Proceso de actualización completado exitosamente");
+        
     }
 
 }

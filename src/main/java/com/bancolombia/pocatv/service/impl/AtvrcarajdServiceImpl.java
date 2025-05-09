@@ -50,9 +50,9 @@ public class AtvrcarajdServiceImpl implements AtvrcarajdService {
 					String fechaStr = String.format("%08d", arqueo.getFechaArqueo());
 					LocalDate fecha = LocalDate.parse(fechaStr, DateTimeFormatter.BASIC_ISO_DATE);
 					// Convertir LocalDate a String antes de asignarlo
-					temArqueo.setTmfear(fecha.format(DateTimeFormatter.ISO_DATE));
+					//temArqueo.setTmfear(fecha.format(DateTimeFormatter.ISO_DATE));
 				} else {
-					temArqueo.setTmfear(LocalDate.now().format(DateTimeFormatter.ISO_DATE)); // Valor por defecto
+					//temArqueo.setTmfear(LocalDate.now().format(DateTimeFormatter.ISO_DATE)); // Valor por defecto
 				}
 
 				// Asignar valores desde arqueo a temArqueo

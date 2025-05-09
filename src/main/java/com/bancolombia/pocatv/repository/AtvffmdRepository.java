@@ -44,4 +44,6 @@ public interface AtvffmdRepository extends JpaRepository<Atvffmd, AtvffmdId> {
     List<Atvffmd> findLatestByOperationAndDocument(
             @Param("mdcopr") String mdcopr,
             @Param("mdcodo") String mdcodo);
+
+    List<Object> findByMdcoprAndMdcodoAndMdano(String mdcopr, String mdcodo, Integer mdano);
 }

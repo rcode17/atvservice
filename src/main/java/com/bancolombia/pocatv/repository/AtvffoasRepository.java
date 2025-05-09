@@ -40,5 +40,8 @@ public interface AtvffoasRepository extends JpaRepository<Atvffoas, AtvffoasId> 
 	// Filtrar por año (anno) (usuario) solamente
 	@Query(value = "select oas.* from atvffuser_xbknam ax join atvffoas oas on ax.xnnmky = oas.oaxnnmky where ax.xuuser = :fuser and oas.oaano = :anno", nativeQuery = true)
 	List<Atvffoas> findAnnoUser(@Param("anno") Integer anno, @Param("fuser") String usuario);
+	
+	List<Atvffoas> findByIdOaanoAndIdOames(Integer oaano,Integer oames);
+    void deleteByIdOaanoAndIdOames(Integer oaano,Integer oames);
 
 }

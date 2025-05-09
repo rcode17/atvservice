@@ -2,11 +2,16 @@ package com.bancolombia.pocatv.utils;
 
 import org.springframework.stereotype.Component;
 
+import com.bancolombia.pocatv.dto.FechaTransformResponseDTO;
+
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 /**
  * Clase utilitaria para transformaciones de datos durante el proceso de carga
@@ -204,5 +209,30 @@ public class DataTransformationUtil {
             return null;
         }
         return valor.toString();
+    }
+    
+    
+    /**
+     * Resta un día a la fecha proporcionada en formato MMddyyyy y devuelve un objeto FechaResponse
+     * que contiene el día, mes y año resultantes.
+     *
+     * @param fecha La fecha en formato MMddyyyy.
+     * @return Un objeto FechaResponse con el día, mes y año después de restar un día.
+     * @throws IllegalArgumentException Si el formato de la fecha es inválido.
+     */
+    public static FechaTransformResponseDTO restarUnDia(String fecha) {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMddyyyy");
+            LocalDate fechaOriginal = LocalDate.parse(fecha, formatter);
+            LocalDate fechaModificada = fechaOriginal.minusDays(1);
+
+            int dia = fechaModificada.getDayOfMonth();
+            int mes = fechaModificada.getMonthValue();
+            int ano = fechaModificada.getYear();
+
+            return new FechaTransformResponseDTO(dia, mes, ano);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Formato de fecha inválido. Use MMddyyyy.");
+        }
     }
 }

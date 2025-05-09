@@ -15,6 +15,8 @@ import com.bancolombia.pocatv.dto.ResponseDTO;
 import com.bancolombia.pocatv.dto.ResponseIncumplimientoDTO;
 import com.bancolombia.pocatv.dto.ArqueoResumenDTO;
 import com.bancolombia.pocatv.dto.ArqueoTotalesDTO;
+import com.bancolombia.pocatv.dto.EstadisticaProductoDTO;
+import com.bancolombia.pocatv.dto.EstadisticaTotalAreaDTO;
 import com.bancolombia.pocatv.model.Atvffarq;
 import com.bancolombia.pocatv.model.Atvffcrd;
 
@@ -127,5 +129,41 @@ public interface AtvffarqService {
 	     */
 	    ArqueoResumenDTO procesarArqueo(String usuario, String pro, String doc, String des, Integer sucursal, 
 	                                   String nomSuc, Integer ano, Integer mes);
+	    
+	    void actualizarArqueos();
+	    
+	    /**
+	     * Limpia todos los registros de los archivos de arqueo
+	     * @param entorno El entorno de trabajo (NACIONAL, DDS, CALIDAD)
+	     * @return Mensaje de confirmación
+	     */
+	    String limpiarArchivosArqueo();
+	    
+	    
+	    
+	    /**
+	     * Obtiene las estadísticas de calidad de información por producto para una sucursal y año específicos
+	     * @param usuario Usuario que realiza la consulta
+	     * @param ano Año para el cual se calculan las estadísticas
+	     * @param sucursal Código de la sucursal
+	     * @return Lista de estadísticas por producto
+	     */
+	    List<EstadisticaProductoDTO> obtenerEstadisticasPorProducto(String usuario, Integer ano, Integer sucursal);
+	    
+	    /**
+	     * Obtiene los totales de estadísticas de calidad para una sucursal y año específicos
+	     * @param usuario Usuario que realiza la consulta
+	     * @param ano Año para el cual se calculan los totales
+	     * @param sucursal Código de la sucursal
+	     * @return Objeto con los totales por mes
+	     */
+	    EstadisticaTotalAreaDTO obtenerTotalesEstadisticas(String usuario, Integer ano, Integer sucursal);
+	    
+	    /**
+	     * Obtiene el nombre de la sucursal por su código
+	     * @param sucursal Código de la sucursal
+	     * @return Nombre de la sucursal
+	     */
+	    String obtenerNombreSucursal(Integer sucursal);
 	    
 }

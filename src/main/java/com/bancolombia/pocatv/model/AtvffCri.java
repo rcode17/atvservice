@@ -7,14 +7,17 @@ import jakarta.persistence.*;
 import lombok.*;
 
 
-@Entity
 @Data
+@Entity
 @Table(name = "atvffcri")
 public class AtvffCri {
 
     @EmbeddedId
     private AtvffCriId id; // Clave primaria compuesta
 
+    @Column(name = "crcon", length = 2, nullable = false)
+    private Integer crcon;
+    
     @Column(name = "crnomsuc", length = 15, nullable = false)
     private String crnomsuc;
 

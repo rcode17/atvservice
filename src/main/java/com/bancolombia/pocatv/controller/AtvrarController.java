@@ -68,7 +68,7 @@ public class AtvrarController {
     @GetMapping("/atvrval")
     public ResponseEntity<String>  procesarRegistros() {
         try {
-            atvrvalService.processRecords();
+            atvrvalService.procesarArqueos();
             return  ResponseEntity.ok( "Proceso de registros completado");
         }
         catch (Exception e) {
@@ -90,6 +90,8 @@ public class AtvrarController {
         try {
             int registrosProcesados = atvrRepService.procesarRechazos(
                     usuario, mesInicio, diaInicio, anoInicio, mesFin, diaFin, anoFin);
+
+            atvrvalService.procesarArqueos();
             return ResponseEntity.ok("Proceso completado. Registros procesados: " + registrosProcesados);
             }
         catch (IllegalArgumentException e) {
