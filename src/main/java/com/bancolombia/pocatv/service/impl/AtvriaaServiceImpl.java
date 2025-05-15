@@ -42,9 +42,9 @@ public class AtvriaaServiceImpl implements AtvriaaService {
 
 	@Override
 	@Transactional
-	public List<EstadisticaRegionDTO> generarEstadisticasPorRegion(ParametrosConsultaDTO parametros) {
-		Integer ano = parametros.getAno();
-		String fechaStr = parametros.getFecha();
+	public List<EstadisticaRegionDTO> generarEstadisticasPorRegion(Integer ano , String fechaStr) {
+		//Integer ano = parametros.getAno();
+		//String fechaStr = parametros.getFecha();
 
 		// Limpiar estadísticas previas
 		limpiarEstadisticas(ano);

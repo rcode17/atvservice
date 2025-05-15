@@ -2,11 +2,13 @@ package com.bancolombia.pocatv.repository;
 
 import com.bancolombia.pocatv.model.AtvffDsun;
 import com.bancolombia.pocatv.model.AtvffDsunId;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,4 +26,17 @@ public interface AtvffDsunRepository extends JpaRepository<AtvffDsun, AtvffDsunI
     Optional<AtvffDsun> findById(AtvffDsunId id);
     
     List<AtvffDsun> findAll();
+    
+    // Buscar por año, mes y sucursal utilizando una consulta personalizada
+    @Query("SELECT d FROM AtvffDsun d WHERE d.dnano = :dnano AND d.dnmes = :dnmes AND d.dnxnnmky = :dnxnnmky")
+    AtvffDsun findByDnanoAndDnmesAndDnxnnmky(@Param("dnano") Integer dnano, @Param("dnmes") Integer dnmes, @Param("dnxnnmky") Integer dnxnnmky);
+    
+    // Eliminar por clave compuesta completa
+    void deleteById(AtvffDsunId id);
+
+    // Eliminar registros utilizando dnano y dnmes
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM AtvffDsun d WHERE d.dnano = :dnano AND d.dnmes = :dnmes")
+    void deleteByDnanoAndDnmes(@Param("dnano") Integer dnano, @Param("dnmes") Integer dnmes);
 }

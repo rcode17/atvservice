@@ -34,10 +34,10 @@ public class AtvfffreinServiceImpl implements AtvfffreinService {
 	}
 
 	@Override
-	public List<Atvfffrein> getFuncionariosByPage(int page, int size) {
-		Pageable pageable = PageRequest.of(page, size);
+	public Page<Atvfffrein> getFuncionariosByPage(Pageable pageable) {
+		//Pageable pageable = PageRequest.of(page, size);
 		Page<Atvfffrein> pageResult = funcionarioRepository.findAll(pageable);
-		return pageResult.getContent();
+		return pageResult;
 	}
 
 	@Override
@@ -48,7 +48,11 @@ public class AtvfffreinServiceImpl implements AtvfffreinService {
 
 	@Override
 	public Atvfffrein saveFuncionario(Atvfffrein funcionario) {
-		return funcionarioRepository.save(funcionario);
+		try {
+			return funcionarioRepository.save(funcionario);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override

@@ -33,15 +33,15 @@ public class CustomTasklet implements Tasklet {
 
 		// Lógica de procesamiento
 
-		System.out.println("Ejecutando proceso para la fecha: ");
-		log.info("Ejecutando proceso para la fecha: ");
+	
+		log.info("Ejecutando proceso Atvocad2 ");
 		ConciliacionRequest conciliacionRequest = new ConciliacionRequest();
 		conciliacionRequest.setAno(ano);
 		conciliacionRequest.setMes(mes);
 		conciliacionRequest.setDia(dia);
 		atvffcadService.generarConciliacion(conciliacionRequest);
-		log.info("Termino Ejecución ");
-		System.out.println("Termino Ejecución ");
+		log.info("Termino Ejecución Atvocad2 ");
+		
 		return RepeatStatus.FINISHED;
 	}
 }

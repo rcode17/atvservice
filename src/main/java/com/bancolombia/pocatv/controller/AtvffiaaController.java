@@ -23,7 +23,9 @@ public class AtvffiaaController {
     
     @PostMapping("/generar")
     public ResponseEntity<List<EstadisticaRegionDTO>> generarEstadisticas(@RequestBody ParametrosConsultaDTO parametros) {
-        List<EstadisticaRegionDTO> estadisticas = atvriaaService.generarEstadisticasPorRegion(parametros);
+        Integer ano = parametros.getAno();
+        String fechaStr = parametros.getFecha();
+        List<EstadisticaRegionDTO> estadisticas = atvriaaService.generarEstadisticasPorRegion(ano, fechaStr);
         return ResponseEntity.ok(estadisticas);
     }
 

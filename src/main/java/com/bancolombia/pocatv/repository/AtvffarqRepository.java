@@ -87,6 +87,10 @@ public interface AtvffarqRepository extends JpaRepository<Atvffarq, AtvffarqId> 
 		String monthStr = month < 10 ? "0" + month : String.valueOf(month);
 		return findByYearMonthString(year + "-" + monthStr);
 	}
+	
+    
+    @Query(value ="SELECT * FROM atvffarq a WHERE SUBSTRING(a.aqfear, 1, 4) = CAST(:anno AS TEXT) AND SUBSTRING(a.aqfear, 6, 2) = LPAD(CAST(:mes AS TEXT), 2, '0') AND a.aqres = 'D'", nativeQuery = true)
+    List<Atvffarq> findArqueosDescuadradosByAnnoAndMes(@Param("anno") String anno, @Param("mes") String mes);
 
 	@Query("SELECT a FROM Atvffarq a WHERE a.aqcopr = :copr AND a.aqcodo = :codo AND SUBSTRING(a.aqfear, 1, 4) = :ano")
 	List<Atvffarq> findByAqcoprAndAqcodoAndAno(@Param("copr") String copr, @Param("codo") String codo,
@@ -154,6 +158,14 @@ public interface AtvffarqRepository extends JpaRepository<Atvffarq, AtvffarqId> 
     @Query("SELECT a FROM Atvffarq a WHERE a.aqcopr = :codigoProducto AND a.aqcodo = :codigoDocumento AND a.aqfear BETWEEN :fechaInicio AND :fechaFin")
     List<Atvffarq> findByProductoAndDocumentoAndFechaBetween(
             @Param("codigoProducto") String codigoProducto,
+            @Param("codigoDocumento") String codigoDocumento,
+            @Param("fechaInicio") String fechaInicio,
+            @Param("fechaFin") String fechaFin);
+    
+    @Query("SELECT a FROM Atvffarq a WHERE a.aqcdsu = :suc AND a.aqcopr = :codigoProducto AND a.aqcodo = :codigoDocumento AND a.aqfear BETWEEN :fechaInicio AND :fechaFin")
+    List<Atvffarq> findBySucursalAndProductoAndDocumentoAndFechaBetween(
+    		@Param("suc") Integer suc,
+    		@Param("codigoProducto") String codigoProducto,
             @Param("codigoDocumento") String codigoDocumento,
             @Param("fechaInicio") String fechaInicio,
             @Param("fechaFin") String fechaFin);

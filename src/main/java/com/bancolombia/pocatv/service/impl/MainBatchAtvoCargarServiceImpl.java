@@ -78,13 +78,13 @@ public class MainBatchAtvoCargarServiceImpl implements MainBatchAtvoCargarServic
 	public void executeBatch() {
 		try {
             // Validar que el proceso no se ejecute más de una vez al día
-            if (isAlreadyExecutedToday("atvoCargarJob")) {
+            /*if (isAlreadyExecutedToday("atvoCargarJob")) {
                 sendUserMessage("El proceso ATV no puede ser ejecutado dos veces en un día. Por favor verifique que no haya sido ejecutado ya.");
                 return;
-            }
+            }*/
 
             // Limpieza de archivos
-            //clearFiles();
+            clearFiles();
 
             // Ejecución del job de Spring Batch
             JobParameters jobParameters = new JobParametersBuilder()
@@ -94,7 +94,7 @@ public class MainBatchAtvoCargarServiceImpl implements MainBatchAtvoCargarServic
 
 
             // Limpieza final
-            //finalClearFiles();
+            finalClearFiles();
             
         } catch (Exception e) {
             e.printStackTrace();

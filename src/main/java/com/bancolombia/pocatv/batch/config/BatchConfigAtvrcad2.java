@@ -1,6 +1,5 @@
 package com.bancolombia.pocatv.batch.config;
 
-
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -11,7 +10,6 @@ import org.springframework.batch.core.step.tasklet.TaskletStep;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
-
 import com.bancolombia.pocatv.service.CustomTasklet;
 
 @Configuration
@@ -31,15 +29,14 @@ public class BatchConfigAtvrcad2 {
     @Bean
     public Job atvrcad2() {
         return new JobBuilder("atvrcad2", jobRepository)
-                .start(step1())
+                .start(atvrcad2Step1())
                 .build();
     }
 
     @Bean
-    public Step step1() {
-        TaskletStep step = new StepBuilder("step1", jobRepository)
+    public Step atvrcad2Step1() {
+        return new StepBuilder("atvrcad2Step1", jobRepository)
                 .tasklet(customTasklet, transactionManager)
                 .build();
-        return step;
     }
 }

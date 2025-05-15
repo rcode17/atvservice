@@ -1,6 +1,8 @@
 package com.bancolombia.pocatv.controller;
 
 import com.bancolombia.pocatv.dto.FechaConsultaDTO;
+import com.bancolombia.pocatv.service.AtvfreinService;
+import com.bancolombia.pocatv.service.Atvrega2Service;
 import com.bancolombia.pocatv.service.AtvrmpercService;
 import com.bancolombia.pocatv.service.AtvrmpersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +22,25 @@ public class AtvrmpersController {
     @Autowired
     private AtvrmpersService batchService;
 
+    @Autowired
+    private Atvrega2Service atvrega2Service;
+
+    @Autowired
+    private AtvfreinService atvfreinService;
+
     @PostMapping("/ATVOFREIN")
     public ResponseEntity<Map<String, String>> ejecutarBatchATVOFREIN(@RequestBody FechaConsultaDTO fechaConsulta) {
-        // Lógica para ejecutar el batch CAE2
-        String resultado = batchService.ejecutarBatchATVOFREIN(fechaConsulta.getFechaConsulta());
+        String fechaStr = fechaConsulta.getFechaConsulta();
+
+        // Validar que la longitud de la fecha sea correcta
+        if (fechaStr.length() != 6) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Formato de fecha inválido. Debe ser 'MMYYYY'"));
+        }
+
+        String fecha = fechaStr.substring(2, 6) + fechaStr.substring(0, 2)+"01";
+
+        atvfreinService.procesarFuncionariosReincidentes(fecha);
+        String resultado = "Batch ejecutado con fecha: " + fechaConsulta;
         Map<String, String> response = new HashMap<>();
         response.put("message", resultado);
 
@@ -62,8 +79,18 @@ public class AtvrmpersController {
 
     @PostMapping("/ATVREGA2")
     public ResponseEntity<Map<String, String>> ejecutarBatchATVREGA2(@RequestBody FechaConsultaDTO fechaConsulta) {
-        // Lógica para ejecutar el batch CRI2
-        String resultado = batchService.ejecutarBatchATVREGA2(fechaConsulta.getFechaConsulta());
+
+        String fechaStr = fechaConsulta.getFechaConsulta();
+
+        // Validar que la longitud de la fecha sea correcta
+        if (fechaStr.length() != 6) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Formato de fecha inválido. Debe ser 'MMYYYY'"));
+        }
+
+        String fecha = fechaStr.substring(2, 6) + "-" + fechaStr.substring(0, 2)+"-01";
+
+        atvrega2Service.generarReporteArqueos(fecha);
+        String resultado = "Batch ejecutado con fecha: " + fechaConsulta;
         Map<String, String> response = new HashMap<>();
         response.put("message", resultado);
 

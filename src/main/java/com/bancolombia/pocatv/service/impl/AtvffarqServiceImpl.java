@@ -7,16 +7,18 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
+import org.springframework.retry.annotation.Backoff;
 import com.bancolombia.pocatv.utils.ClrpfmTablesUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+
 
 import com.bancolombia.pocatv.dto.ArqueoAnormalDTO;
 import com.bancolombia.pocatv.dto.ArqueoDTO;
@@ -59,8 +61,9 @@ import com.bancolombia.pocatv.repository.XbknamRepository;
 import com.bancolombia.pocatv.service.AtvffarqService;
 import com.bancolombia.pocatv.utils.CalculadoraEstadistica;
 import com.bancolombia.pocatv.utils.CalcularPorcentajes;
+import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.transaction.Transactional;
+
 
 @Service
 public class AtvffarqServiceImpl implements AtvffarqService {
@@ -393,7 +396,7 @@ public class AtvffarqServiceImpl implements AtvffarqService {
     @Transactional
     public List<Atvffcrd> procesarArqueosDescuadrados() {
         // Fecha por defecto como en el código RPG original (20000101)
-        LocalDate fechaInicio = LocalDate.of(2023,1,15);
+        LocalDate fechaInicio = LocalDate.of(2000,1,1);
         return procesarArqueosDescuadradosDesdeFecha(fechaInicio);
     }
     
@@ -961,9 +964,11 @@ public class AtvffarqServiceImpl implements AtvffarqService {
 	}
 	
 	
-	 @Override
-	    @Transactional
-	    public String limpiarArchivosArqueo() {
+	@Override
+	@Retryable(value = {
+			org.springframework.dao.CannotAcquireLockException.class }, maxAttempts = 3, backoff = @Backoff(delay = 2000))
+	@Transactional(isolation = Isolation.READ_COMMITTED)
+	public String limpiarArchivosArqueo() {
 	 
    
 	        try {

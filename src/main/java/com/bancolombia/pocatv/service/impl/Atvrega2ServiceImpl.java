@@ -208,16 +208,76 @@ public class Atvrega2ServiceImpl implements Atvrega2Service {
     private void guardarResultadoTemporal(ReporteArqueoDTO reporte, Integer mes, Integer ano) {
         try {
             Atvffega resultado = new Atvffega();
+
+
+            if (reporte.getCump11() != null) {
+                String Cump11Str = reporte.getCump11().toString();
+                if (reporte.getCump11().toString().length() > 3) {
+                    Cump11Str = Cump11Str.substring(Cump11Str.length() - 3);
+                }
+                Integer Cump11Int = Integer.valueOf(Cump11Str);
+                resultado.setEgcump11(Cump11Int);
+            }
+
+            if (reporte.getCump22() != null) {
+                String Cump22Str = reporte.getCump22().toString();
+                if (reporte.getCump22().toString().length() > 3) {
+                    Cump22Str = Cump22Str.substring(Cump22Str.length() - 3);
+                }
+                Integer Cump22Int = Integer.valueOf(Cump22Str);
+                resultado.setEgcump22(Cump22Int);
+            }
+
+            if (reporte.getVarc() != null) {
+                String VarcStr = reporte.getVarc().toString();
+                if (reporte.getVarc().toString().length() > 3) {
+                    VarcStr = VarcStr.substring(VarcStr.length() - 3);
+                }
+                resultado.setEgvarc(VarcStr);
+            }
+
+
+            if (reporte.getInf11() != null) {
+                String Inf11Str = reporte.getInf11().toString();
+                if (reporte.getInf11().toString().length() > 3) {
+                    Inf11Str = Inf11Str.substring(Inf11Str.length() - 3);
+                }
+                Integer Inf11Int = Integer.valueOf(Inf11Str);
+                resultado.setEginf11(Inf11Int);
+            }
+
+            if (reporte.getInf22() != null) {
+                String Inf22Str = reporte.getInf22().toString();
+                if (reporte.getInf22().toString().length() > 3) {
+                    Inf22Str = Inf22Str.substring(Inf22Str.length() - 3);
+                }
+                Integer Inf22Int = Integer.valueOf(Inf22Str);
+                resultado.setEginf22(Inf22Int);
+            }
+            if (reporte.getVari() != null) {
+                String VariStr = reporte.getVari().toString();
+                if (VariStr.length() > 3) {
+                    VariStr = VariStr.substring(VariStr.length() - 3);
+                }
+                resultado.setEgvari(VariStr);
+            }
+
             resultado.setEgmesin(mes);
             resultado.setEganoin(ano);
             resultado.setEgnombre(reporte.getNombre());
             resultado.setEgsucursal(reporte.getSucursal());
-            resultado.setEgcump11(reporte.getCump11());
-            resultado.setEgcump22(reporte.getCump22());
-            resultado.setEgvarc(reporte.getVarc().toString());
-            resultado.setEginf11(reporte.getInf11());
-            resultado.setEginf22(reporte.getInf22());
+
+
+            resultado.setEgantc("");  // Asignar valor predeterminado o desde el reporte si es necesario
+            resultado.setEgactc("");  // Asignar valor predeterminado o desde el reporte si es necesario
+            resultado.setEganti("");  // Asignar valor predeterminado o desde el reporte si es necesario
+            resultado.setEgacti("");  // Asignar valor predeterminado o desde el reporte si es necesario
+            resultado.setEganonc(0);  // Asignar valor predeterminado o desde el reporte si es necesario
+            resultado.setEganoni(0);  // Asignar valor predeterminado o desde el reporte si es necesario
+            resultado.setEganocc(0);  // Asignar valor predeterminado o desde el reporte si es necesario
+            resultado.setEganoci(0);  // Asignar valor predeterminado o desde el reporte si es necesario
             resultado.setEgind07("0"); // Asignar valor como en la lógica original
+
 
             atvffegaRepository.save(resultado);
         } catch (Exception e) {

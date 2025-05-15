@@ -41,33 +41,37 @@ public class AtvffCaeServiceImpl implements AtvffCaeService {
     @Override
     @Transactional
     public List<AtvffCae> generarReporteCumplimiento(Integer mes, Integer ano) {
-        // Limpiamos datos anteriores
-        limpiarDatosAnteriores(mes, ano);
-        
-        // Lista para almacenar resultados
-        List<AtvffCae> resultados = new ArrayList<>();
-        
-        // Obtenemos todas las regiones
-        List<Xbknam> sucursales = xbknamRepository.findAll();
-        Set<String> regiones = new HashSet<>();
-        
-        // Extraemos las regiones únicas
-        for (Xbknam sucursal : sucursales) {
-            if (sucursal.getXncdmr() != null && !sucursal.getXncdmr().trim().isEmpty()) {
-                regiones.add(sucursal.getXncdmr());
+        try {
+            // Limpiamos datos anteriores
+            limpiarDatosAnteriores(mes, ano);
+
+            // Lista para almacenar resultados
+            List<AtvffCae> resultados = new ArrayList<>();
+
+            // Obtenemos todas las regiones
+            List<Xbknam> sucursales = xbknamRepository.findAll();
+            Set<String> regiones = new HashSet<>();
+
+            // Extraemos las regiones únicas
+            for (Xbknam sucursal : sucursales) {
+                if (sucursal.getXncdmr() != null && !sucursal.getXncdmr().trim().isEmpty()) {
+                    regiones.add(sucursal.getXncdmr());
+                }
             }
-        }
-        
-        // Procesamos cada región
-        for (String region : regiones) {
-            AtvffCae resultado = procesarRegion(region, mes, ano);
-            if (resultado != null) {
-                resultados.add(resultado);
-                atvffCaeRepository.save(resultado);
+
+            // Procesamos cada región
+            for (String region : regiones) {
+                List<AtvffCae> resultado = procesarRegion(region, mes, ano);
+                if (resultado != null) {
+                    resultados.add(resultado.get(0));
+                    atvffCaeRepository.save(resultado.get(0));
+                }
             }
+
+            return resultados;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        
-        return resultados;
     }
 
     @Override
@@ -76,14 +80,15 @@ public class AtvffCaeServiceImpl implements AtvffCaeService {
         atvffCaeRepository.deleteByCamesAndCaano(mes, ano);
     }
     
-    private AtvffCae procesarRegion(String region, Integer mes, Integer ano) {
-        // Obtenemos información de la región
-        Optional<Xmgreg> infoRegionOpt = xmgregRepository.findByXmcdmr(region);
-        if (infoRegionOpt.isEmpty()) {
-            return null;
-        }
-        
-        Xmgreg infoRegion = infoRegionOpt.get();
+    private List<AtvffCae> procesarRegion(String region, Integer mes, Integer ano) {
+    	// Obtenemos información de la región
+    	List<Xmgreg> infoRegionList = xmgregRepository.findByXmcdmr(region);
+    	if (infoRegionList.isEmpty()) {
+    	    return null; // O manejar el caso según tu lógica
+    	}
+
+    	// Si deseas trabajar con el primer resultado
+    	Xmgreg infoRegion = infoRegionList.get(0); // Obtiene el primer elemento de la lista
         
         // Inicializamos contadores
         int totalArqueos = 0;
@@ -149,15 +154,17 @@ public class AtvffCaeServiceImpl implements AtvffCaeService {
         int porcentajeCalidad = arqueosEjecutados > 0 ? (arqueosCuadrados * 100) / arqueosEjecutados : 0;
         
         // Creamos el resultado
-        AtvffCae resultado = new AtvffCae();
+        List<AtvffCae> resultados = new ArrayList<AtvffCae>();
+        AtvffCae resultado =new AtvffCae();
         resultado.setCaano(ano);
         resultado.setCames(mes);
         resultado.setCacumpli(porcentajeCumplimiento);
         resultado.setCacalid(porcentajeCalidad);
         resultado.setCanombre(infoRegion.getXmnmr());
         resultado.setCaregion(region);
+        resultados.add(resultado);
         
-        return resultado;
+        return resultados;
     }
     
     private int calcularArqueosEsperados(AtvffFre frecuencia, Integer mes) {

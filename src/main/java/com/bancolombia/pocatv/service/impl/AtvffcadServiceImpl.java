@@ -18,9 +18,12 @@ import com.bancolombia.pocatv.repository.AtvffsalRepository;
 import com.bancolombia.pocatv.repository.GidbllRepository;
 import com.bancolombia.pocatv.service.AtvffcadService;
 import com.bancolombia.pocatv.utils.ValidateFechaUtil;
-
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -54,7 +57,10 @@ public class AtvffcadServiceImpl implements AtvffcadService {
     @Autowired
     private AtvfflogRepository atvfflogRepository;
 
-    @Override
+	@Override
+	@Retryable(value = {
+			org.springframework.dao.CannotAcquireLockException.class }, maxAttempts = 3, backoff = @Backoff(delay = 2000))
+	@Transactional(isolation = Isolation.READ_COMMITTED)
     public void generarConciliacion(ConciliacionRequest request) {
         if (request.getDia() == null || request.getMes() == null || request.getAno() == null) {
             throw new IllegalArgumentException("Los parámetros día, mes y año son obligatorios");

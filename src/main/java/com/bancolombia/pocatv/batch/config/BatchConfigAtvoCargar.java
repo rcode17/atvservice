@@ -64,8 +64,8 @@ public class BatchConfigAtvoCargar {
     @Bean
     public Job atvoCargarJob(
             Step processSa1Step,
-            Step processSa2Step,
-            Step atvrcarajdStep,
+            Step processSa2Step
+            /*Step atvrcarajdStep,
             Step caratsStep,
             Step carameStep,
             Step caracaStep,
@@ -88,12 +88,12 @@ public class BatchConfigAtvoCargar {
             Step crd0Step,
             Step apa2Step,
             Step frein1Step,
-            Step espo3Step) {
+            Step espo3Step*/) {
 
         return new JobBuilder("atvoCargarJob", jobRepository)
                 .start(processSa1Step)
                 .next(processSa2Step)
-                .next(atvrcarajdStep)
+                /*.next(atvrcarajdStep)
                 .next(caratsStep)
                 .next(carameStep)
                 .next(caracaStep)
@@ -116,7 +116,7 @@ public class BatchConfigAtvoCargar {
                 .next(crd0Step)
                 .next(apa2Step)
                 .next(frein1Step)
-                .next(espo3Step)
+                .next(espo3Step)*/
                 .build();
     }
 

@@ -5,6 +5,8 @@ import com.bancolombia.pocatv.model.Atvfffrein;
 import com.bancolombia.pocatv.service.AtvffapaService;
 import com.bancolombia.pocatv.service.AtvfffreinService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,10 +29,9 @@ public class AtvfffreinController {
 
     // Obtener funcionarios paginados
     @GetMapping("/page")
-    public List<Atvfffrein> getFuncionariosByPage(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "7") int size) {
-        return funcionarioService.getFuncionariosByPage(page, size);
+    public Page<Atvfffrein> getFuncionariosByPage(
+            Pageable pageable) {
+        return funcionarioService.getFuncionariosByPage(pageable);
     }
 
     // Obtener funcionario por ID

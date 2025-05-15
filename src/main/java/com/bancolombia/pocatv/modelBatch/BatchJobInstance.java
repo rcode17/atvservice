@@ -2,36 +2,28 @@ package com.bancolombia.pocatv.modelBatch;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "BATCH_JOB_INSTANCE")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class BatchJobInstance {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long jobInstanceId;
+    @Column(name = "JOB_INSTANCE_ID")
+    private Long id;
 
     @Column(name = "JOB_NAME")
     private String jobName;
 
-    // Getters y Setters
-    public Long getJobInstanceId() {
-        return jobInstanceId;
-    }
-
-    public void setJobInstanceId(Long jobInstanceId) {
-        this.jobInstanceId = jobInstanceId;
-    }
-
-    public String getJobName() {
-        return jobName;
-    }
-
-    public void setJobName(String jobName) {
-        this.jobName = jobName;
-    }
+    @Column(name = "JOB_KEY")
+    private String jobKey;
 }

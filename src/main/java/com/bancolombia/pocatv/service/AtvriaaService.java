@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface AtvriaaService {
 
-	List<EstadisticaRegionDTO> generarEstadisticasPorRegion(ParametrosConsultaDTO parametros);
+	List<EstadisticaRegionDTO> generarEstadisticasPorRegion(Integer ano , String fechaStr);
 	void limpiarEstadisticas(Integer ano);
 }

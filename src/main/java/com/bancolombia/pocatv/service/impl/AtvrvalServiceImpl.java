@@ -58,6 +58,8 @@ public class AtvrvalServiceImpl implements AtvrvalService {
     @Override
     @Transactional
     public void procesarArqueos() {
+        try {
+
         List<Atvfftem> registros = atvfftemRepository.findAll();
 
         for (Atvfftem registro : registros) {
@@ -103,6 +105,10 @@ public class AtvrvalServiceImpl implements AtvrvalService {
                 escribirRechazo(registro, "RES");
             }
         }
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
     private BigDecimal convertStringoToDecimal(String valorString ) {
 
@@ -122,60 +128,138 @@ public class AtvrvalServiceImpl implements AtvrvalService {
     }
 
     private void escribirRechazo(Atvfftem registro, String motivoRechazo) {
-        Atvffrec rechazo = new Atvffrec();
+        try {
+            Atvffrec rechazo = new Atvffrec();
 
-        // Generar fecha de rechazo (formato AAAAMMDD)
-        String fechaRechazo = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-        rechazo.setRcfere(fechaRechazo);
-
-        // Copiar datos del registro temporal al rechazo
-        String fechaString = registro.getTmfear().toString();
-        Date fechaDate = null;
-
-        if (fechaString != null && !fechaString.isEmpty()) {
-            try {
-                SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd"); // Ajusta el formato según tu String
-                fechaDate = formato.parse(fechaString);
-            } catch (ParseException e) {
-                // Manejo del error de parseo
-                System.err.println("Error al convertir la fecha: " + e.getMessage());
+            // Validar y truncar rccopr (bpchar(2))
+            if (registro.getTmcopr() != null) {
+                String rccoprStr = registro.getTmcopr();
+                if (rccoprStr.length() > 2) {
+                    System.err.println("Valor de rccopr excede longitud permitida: " + rccoprStr);
+                    rccoprStr = rccoprStr.substring(rccoprStr.length() - 2); // Tomar los últimos 2 caracteres
+                }
+                rechazo.setRccopr(rccoprStr);
             }
+
+            // Validar y truncar rcres (bpchar(2))
+            if (registro.getTmres() != null) {
+                String rcresStr = registro.getTmres();
+                if (rcresStr.length() > 2) {
+                    System.err.println("Valor de rcres excede longitud permitida: " + rcresStr);
+                    rcresStr = rcresStr.substring(rcresStr.length() - 2); // Tomar los últimos 2 caracteres
+                }
+                rechazo.setRcres(rcresStr);
+            }
+
+            // Validar y truncar rccodo (bpchar(3))
+            if (registro.getTmcodo() != null) {
+                String rccodoStr = registro.getTmcodo();
+                if (rccodoStr.length() > 2) {
+                    System.err.println("Valor de rcres excede longitud permitida: " + rccodoStr);
+                    rccodoStr = rccodoStr.substring(rccodoStr.length() - 2); // Tomar los últimos 2 caracteres
+                }
+                rechazo.setRccodo(rccodoStr);
+            }
+
+
+            // Generar fecha de rechazo (formato AAAAMMDD)
+            String fechaRechazo = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+            rechazo.setRcfere(fechaRechazo);
+
+            // Copiar datos del registro temporal al rechazo
+            String fechaString = registro.getTmfear().toString();
+            Date fechaDate = null;
+
+            if (fechaString != null && !fechaString.isEmpty()) {
+                try {
+                    SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd"); // Ajusta el formato según tu String
+                    fechaDate = formato.parse(fechaString);
+                } catch (ParseException e) {
+                    // Manejo del error de parseo
+                    System.err.println("Error al convertir la fecha: " + e.getMessage());
+                }
+            }
+
+            rechazo.setRcfear(fechaDate);
+            rechazo.setRcsuc(registro.getTmsuc());
+            rechazo.setRccdsu(registro.getTmcdsu());
+            rechazo.setRccdsuf(registro.getTmcdsuf());
+            rechazo.setRcprcu(registro.getTmprcu());
+            rechazo.setRccedcn(registro.getTmcedcn());
+            rechazo.setRcpear(registro.getTmpear());
+            rechazo.setRccedan(registro.getTmcedan());
+            rechazo.setRcsubg(registro.getTmsubg());
+            rechazo.setRccesbn(registro.getTmcesbn());
+            rechazo.setRcsfar(registro.getTmsfar());
+            rechazo.setRcdif(registro.getTmdif());
+            rechazo.setRcobsn(registro.getTmobs());
+            rechazo.setRcobsno(registro.getTmobso());
+            rechazo.setRcsfeb(registro.getTmsfeb());
+            rechazo.setRcdeb(registro.getTmdeb());
+            rechazo.setRcsfev(registro.getTmsfev());
+            rechazo.setRcdev(registro.getTmdev());
+            rechazo.setRcsfet(registro.getTmsfet());
+            rechazo.setRchora(registro.getTmhora());
+
+            // Copiar rangos y códigos de cuenta
+            rechazo.setRcrain1(registro.getTmrain1());
+            rechazo.setRcrain2(registro.getTmrain2());
+            rechazo.setRcrain3(registro.getTmrain3());
+            rechazo.setRcrain4(registro.getTmrain4());
+            rechazo.setRcrain5(registro.getTmrain5());
+            rechazo.setRcrain6(registro.getTmrain6());
+            rechazo.setRcrain7(registro.getTmrain7());
+            rechazo.setRcrain8(registro.getTmrain8());
+            rechazo.setRcrain9(registro.getTmrain9());
+            rechazo.setRcrain10(registro.getTmrain10());
+            rechazo.setRcrain11(registro.getTmrain11());
+            rechazo.setRcrain12(registro.getTmrain12());
+            rechazo.setRcrain13(registro.getTmrain13());
+            rechazo.setRcrain14(" ");
+
+            rechazo.setRcrafn1(registro.getTmrafn1());
+            rechazo.setRcrafn2(registro.getTmrafn2());
+            rechazo.setRcrafn3(registro.getTmrafn3());
+            rechazo.setRcrafn4(registro.getTmrafn4());
+            rechazo.setRcrafn5(registro.getTmrafn5());
+            rechazo.setRcrafn6(registro.getTmrafn6());
+            rechazo.setRcrafn7(registro.getTmrafn7());
+            rechazo.setRcrafn8(registro.getTmrafn8());
+            rechazo.setRcrafn9(registro.getTmrafn9());
+            rechazo.setRcrafn10(registro.getTmrafn10());
+            rechazo.setRcrafn11(registro.getTmrafn11());
+            rechazo.setRcrafn12(registro.getTmrafn12());
+            rechazo.setRcrafn13(registro.getTmrafn13());
+            rechazo.setRcrafn14(" ");
+
+
+            rechazo.setRccocu1(registro.getTmcocu1());
+            rechazo.setRccocu2(registro.getTmcocu2());
+            rechazo.setRccocu3(registro.getTmcocu3());
+            rechazo.setRccocu4(registro.getTmcocu4());
+            rechazo.setRccocu5(registro.getTmcocu5());
+            rechazo.setRccocu6(registro.getTmcocu6());
+            rechazo.setRccocu7(registro.getTmcocu7());
+            rechazo.setRccocu8(registro.getTmcocu8());
+            rechazo.setRccocu9(registro.getTmcocu9());
+            rechazo.setRccocu10(registro.getTmcocu10());
+            rechazo.setRccocu11(registro.getTmcocu11());
+            rechazo.setRccocu12(registro.getTmcocu12());
+            rechazo.setRccocu13(registro.getTmcocu13());
+            rechazo.setRccocu14(" ");
+
+            rechazo.setRcrech(motivoRechazo);
+            rechazo.setRcsts(" "); // rcsts
+            rechazo.setRctrans(registro.getTmtrans()); // rctrans
+
+            rechazo.setRcsfeb(new BigDecimal(0));
+            rechazo.setRcsfet(new BigDecimal(0));
+
+            // Guardar el rechazo
+            atvffrecRepository.save(rechazo);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        rechazo.setRcfear(fechaDate);
-        rechazo.setRcsuc(registro.getTmsuc());
-        rechazo.setRccdsu(registro.getTmcdsu());
-        rechazo.setRccdsuf(registro.getTmcdsuf());
-        rechazo.setRcprcu(registro.getTmprcu());
-        rechazo.setRccedcn(registro.getTmcedcn());
-        rechazo.setRcpear(registro.getTmpear());
-        rechazo.setRccedan(registro.getTmcedan());
-        rechazo.setRcsubg(registro.getTmsubg());
-        rechazo.setRccesbn(registro.getTmcesbn());
-        rechazo.setRccopr(registro.getTmcopr());
-        rechazo.setRccodo(registro.getTmcodo());
-        rechazo.setRcsfar(registro.getTmsfar());
-        rechazo.setRcdif(registro.getTmdif());
-        rechazo.setRcres(registro.getTmres());
-        rechazo.setRcobsn(registro.getTmobs());
-        rechazo.setRcobsno(registro.getTmobso());
-        rechazo.setRcsfeb(registro.getTmsfeb());
-        rechazo.setRcdeb(registro.getTmdeb());
-        rechazo.setRcsfev(registro.getTmsfev());
-        rechazo.setRcdev(registro.getTmdev());
-        rechazo.setRcsfet(registro.getTmsfet());
-        rechazo.setRchora(registro.getTmhora());
-
-        // Copiar rangos y códigos de cuenta
-        rechazo.setRcrain1(registro.getTmrain1());
-        rechazo.setRcrafn1(registro.getTmrafn1());
-        rechazo.setRccocu1(registro.getTmcocu1());
-        // ... (continuar con los demás rangos)
-
-        // Establecer motivo de rechazo
-        rechazo.setRcrech(motivoRechazo);
-
-        // Guardar el rechazo
-        atvffrecRepository.save(rechazo);
     }
 
     private void escribirArqueo(Atvfftem registro) {

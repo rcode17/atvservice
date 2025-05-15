@@ -14,7 +14,8 @@ import java.util.Optional;
 @Repository
 public interface XmgregRepository extends JpaRepository<Xmgreg, Long> {
     // Busca por el código de región (xmcdmr) que es un campo, no el ID
-    Optional<Xmgreg> findByXmcdmr(String xmcdmr);
+        
+    List<Xmgreg> findByXmcdmr(String region);
 
     List<Xmgreg> findByXmnmrContaining(String nombreParcial);
 

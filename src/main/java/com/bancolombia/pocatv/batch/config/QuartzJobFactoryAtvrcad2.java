@@ -3,6 +3,7 @@ package com.bancolombia.pocatv.batch.config;
 
 import java.util.UUID;
 
+import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.batch.core.Job;
@@ -11,11 +12,12 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
+@DisallowConcurrentExecution
 public class QuartzJobFactoryAtvrcad2  extends QuartzJobBean{
 	
 
     @Autowired
-    private JobLauncher jobLauncher;
+    private JobLauncher jobLauncheratvrcad2;
 
     @Autowired
     private Job atvrcad2;
@@ -24,7 +26,7 @@ public class QuartzJobFactoryAtvrcad2  extends QuartzJobBean{
     protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
         try {
                    
-            jobLauncher.run(atvrcad2, new JobParametersBuilder()
+        	jobLauncheratvrcad2.run(atvrcad2, new JobParametersBuilder()
             	    .addLong("time", System.currentTimeMillis()) // Añadir un parámetro único
             	    .addString("uid", UUID.randomUUID().toString())
             	    .toJobParameters());

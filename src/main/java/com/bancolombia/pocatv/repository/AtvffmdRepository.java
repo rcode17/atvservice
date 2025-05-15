@@ -46,4 +46,8 @@ public interface AtvffmdRepository extends JpaRepository<Atvffmd, AtvffmdId> {
             @Param("mdcodo") String mdcodo);
 
     List<Object> findByMdcoprAndMdcodoAndMdano(String mdcopr, String mdcodo, Integer mdano);
+    
+ // Métodos alternativos con consultas JPQL (usando campos directos)
+    @Query("SELECT a FROM Atvffmd a WHERE a.mdcopr = :mdcopr AND a.mdcodo = :mdcodo AND a.mdano = :mdano AND a.mdmes = :mdmes")
+    Atvffmd findByCompositeId2(@Param("mdcopr") String mdcopr, @Param("mdcodo") String mdcodo, @Param("mdano") Integer mdano, @Param("mdmes") Short mdmes);
 }

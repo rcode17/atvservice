@@ -12,6 +12,7 @@ import com.bancolombia.pocatv.model.Atvffsal1;
 import com.bancolombia.pocatv.model.Atvffsal1Id;
 
 
+
 public interface Atvffsal1Repository extends JpaRepository<Atvffsal1, Atvffsal1Id> {
 	
     List<Atvffsal1> findBySaofcoAndSatproAndSatdocAndSafech(
@@ -23,3 +24,5 @@ public interface Atvffsal1Repository extends JpaRepository<Atvffsal1, Atvffsal1I
     List<Atvffsal1> findBySatproAndSatdoc(String satpro, String satdoc);
 
 }
+
+

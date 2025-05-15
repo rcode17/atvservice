@@ -34,4 +34,8 @@ public interface AtvffFreRepository extends JpaRepository<AtvffFre, AtvffFreId> 
 											 @Param("fxCodo") String fxCodo);
 
 	AtvffFre findById_FxCoprAndId_FxCodo(String producto, String documento);
+	
+	@Query("SELECT f FROM AtvffFre f WHERE f.id.fxCopr = :fxCopr AND f.id.fxCodo = :fxCodo")
+	AtvffFre findByFxCoprAndFxCodo2(@Param("fxCopr") String fxCopr,
+											 @Param("fxCodo") String fxCodo);
 }

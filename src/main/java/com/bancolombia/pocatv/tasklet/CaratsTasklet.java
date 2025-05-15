@@ -6,17 +6,19 @@ import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.stereotype.Component;
 
+import com.bancolombia.pocatv.service.AtvfftitvaService;
+
 @Component
 public class CaratsTasklet implements Tasklet {
-	/*private final CaratsService service;
+	private final AtvfftitvaService atvfftitvaService;
 
-	public CaratsTasklet(CaratsService service) {
-		this.service = service;
-	}*/
+	public CaratsTasklet(AtvfftitvaService atvfftitvaService) {
+		this.atvfftitvaService = atvfftitvaService;
+	}
 
 	@Override
 	public RepeatStatus execute(StepContribution c, ChunkContext ctx) {
-		//service.procesarCarats();
+		atvfftitvaService.procesarInformacionArqueo();
 		return RepeatStatus.FINISHED;
 	}
 }

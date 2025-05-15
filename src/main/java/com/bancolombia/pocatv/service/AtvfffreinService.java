@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface AtvfffreinService {
 	List<Atvfffrein> getAllFuncionarios();
 
-	List<Atvfffrein> getFuncionariosByPage(int page, int size);
+	Page<Atvfffrein> getFuncionariosByPage(Pageable pageable);
 
 	Atvfffrein getFuncionarioById(String resp);
 

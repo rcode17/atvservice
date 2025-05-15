@@ -13,8 +13,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
 public class AtvfreinServiceImpl implements AtvfreinService {
+	
+	private static final Logger log = LoggerFactory.getLogger(AtvfreinServiceImpl.class);
 
     @Autowired
     private AtvffarqRepository atvffarqRepository;
@@ -113,7 +118,7 @@ public class AtvfreinServiceImpl implements AtvfreinService {
     
     private void limpiarTablasTemporales() {
         atvffTemfrRepository.deleteAll();
-        atvffTemf1Repository.deleteAll();
+        //atvffTemf1Repository.deleteAll();
     }
     
     private void ejecutarSubrutinaPpal(LocalDate fechaActual) {
@@ -132,7 +137,7 @@ public class AtvfreinServiceImpl implements AtvfreinService {
         }
     }
     
-    private void procesarRegistroDsun(AtvffDsun dsun) {
+    /*private void procesarRegistroDsun(AtvffDsun dsun) {
         // Implementa la lógica de la subrutina BUSQUEDA del RPG
         // Verifica campos de calidad y crea registros en ATVFFTEMF1 para los que cumplen condiciones
         
@@ -150,6 +155,237 @@ public class AtvfreinServiceImpl implements AtvfreinService {
         }
         
         // Repetir para los demás campos de calidad (dncalid2-70)
+    }*/
+    
+    private void procesarRegistroDsun(AtvffDsun dsun) {
+    	
+    	// Implementa la lógica de la subrutina BUSQUEDA del RPG
+        // Verifica campos de calidad y crea registros en ATVFFTEMF1 para los que cumplen condiciones
+        
+        // Producto 01 - Documentos 001, 002, 003
+        if (dsun.isCalidadBaja(dsun.getDncalid1())) {
+            crearRegistroTemf1(dsun, "01", "001", dsun.getDncalid1());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid2())) {
+            crearRegistroTemf1(dsun, "01", "002", dsun.getDncalid2());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid3())) {
+            crearRegistroTemf1(dsun, "01", "003", dsun.getDncalid3());
+        }
+        
+        // Producto 02 - Documentos 001, 002, 003
+        if (dsun.isCalidadBaja(dsun.getDncalid4())) {
+            crearRegistroTemf1(dsun, "02", "001", dsun.getDncalid4());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid5())) {
+            crearRegistroTemf1(dsun, "02", "002", dsun.getDncalid5());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid6())) {
+            crearRegistroTemf1(dsun, "02", "003", dsun.getDncalid6());
+        }
+        
+        // Producto 03 - Documento 001
+        if (dsun.isCalidadBaja(dsun.getDncalid7())) {
+            crearRegistroTemf1(dsun, "03", "001", dsun.getDncalid7());
+        }
+        
+        // Producto 04 - Documentos 001 a 011
+        if (dsun.isCalidadBaja(dsun.getDncalid8())) {
+            crearRegistroTemf1(dsun, "04", "001", dsun.getDncalid8());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid9())) {
+            crearRegistroTemf1(dsun, "04", "002", dsun.getDncalid9());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid10())) {
+            crearRegistroTemf1(dsun, "04", "003", dsun.getDncalid10());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid11())) {
+            crearRegistroTemf1(dsun, "04", "004", dsun.getDncalid11());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid12())) {
+            crearRegistroTemf1(dsun, "04", "005", dsun.getDncalid12());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid13())) {
+            crearRegistroTemf1(dsun, "04", "006", dsun.getDncalid13());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid14())) {
+            crearRegistroTemf1(dsun, "04", "007", dsun.getDncalid14());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid15())) {
+            crearRegistroTemf1(dsun, "04", "008", dsun.getDncalid15());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid16())) {
+            crearRegistroTemf1(dsun, "04", "009", dsun.getDncalid16());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid17())) {
+            crearRegistroTemf1(dsun, "04", "010", dsun.getDncalid17());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid54())) {
+            crearRegistroTemf1(dsun, "04", "011", dsun.getDncalid54());
+        }
+        
+        // Producto 05 - Documentos 001, 002, 003
+        if (dsun.isCalidadBaja(dsun.getDncalid18())) {
+            crearRegistroTemf1(dsun, "05", "001", dsun.getDncalid18());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid19())) {
+            crearRegistroTemf1(dsun, "05", "002", dsun.getDncalid19());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid55())) {
+            crearRegistroTemf1(dsun, "05", "003", dsun.getDncalid55());
+        }
+        
+        // Producto 06 - Documento 001
+        if (dsun.isCalidadBaja(dsun.getDncalid20())) {
+            crearRegistroTemf1(dsun, "06", "001", dsun.getDncalid20());
+        }
+        
+        // Producto 07 - Documento 001
+        if (dsun.isCalidadBaja(dsun.getDncalid21())) {
+            crearRegistroTemf1(dsun, "07", "001", dsun.getDncalid21());
+        }
+        
+        // Producto 08 - Documentos 001, 002, 003
+        if (dsun.isCalidadBaja(dsun.getDncalid22())) {
+            crearRegistroTemf1(dsun, "08", "001", dsun.getDncalid22());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid23())) {
+            crearRegistroTemf1(dsun, "08", "002", dsun.getDncalid23());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid24())) {
+            crearRegistroTemf1(dsun, "08", "003", dsun.getDncalid24());
+        }
+        
+        // Producto 09 - Documentos 001 a 005
+        if (dsun.isCalidadBaja(dsun.getDncalid25())) {
+            crearRegistroTemf1(dsun, "09", "001", dsun.getDncalid25());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid26())) {
+            crearRegistroTemf1(dsun, "09", "002", dsun.getDncalid26());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid27())) {
+            crearRegistroTemf1(dsun, "09", "003", dsun.getDncalid27());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid28())) {
+            crearRegistroTemf1(dsun, "09", "004", dsun.getDncalid28());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid29())) {
+            crearRegistroTemf1(dsun, "09", "005", dsun.getDncalid29());
+        }
+        
+        // Producto 11 - Documentos 001, 002
+        if (dsun.isCalidadBaja(dsun.getDncalid30())) {
+            crearRegistroTemf1(dsun, "11", "001", dsun.getDncalid30());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid31())) {
+            crearRegistroTemf1(dsun, "11", "002", dsun.getDncalid31());
+        }
+        
+        // Producto 12 - Documentos 001, 002
+        if (dsun.isCalidadBaja(dsun.getDncalid48())) {
+            crearRegistroTemf1(dsun, "12", "001", dsun.getDncalid48());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid47())) {
+            crearRegistroTemf1(dsun, "12", "002", dsun.getDncalid47());
+        }
+        
+        // Producto 13 - Documentos 001 a 013, 015, 016
+        if (dsun.isCalidadBaja(dsun.getDncalid32())) {
+            crearRegistroTemf1(dsun, "13", "001", dsun.getDncalid32());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid33())) {
+            crearRegistroTemf1(dsun, "13", "002", dsun.getDncalid33());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid34())) {
+            crearRegistroTemf1(dsun, "13", "003", dsun.getDncalid34());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid35())) {
+            crearRegistroTemf1(dsun, "13", "004", dsun.getDncalid35());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid36())) {
+            crearRegistroTemf1(dsun, "13", "005", dsun.getDncalid36());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid37())) {
+            crearRegistroTemf1(dsun, "13", "006", dsun.getDncalid37());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid38())) {
+            crearRegistroTemf1(dsun, "13", "007", dsun.getDncalid38());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid39())) {
+            crearRegistroTemf1(dsun, "13", "008", dsun.getDncalid39());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid40())) {
+            crearRegistroTemf1(dsun, "13", "009", dsun.getDncalid40());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid41())) {
+            crearRegistroTemf1(dsun, "13", "010", dsun.getDncalid41());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid42())) {
+            crearRegistroTemf1(dsun, "13", "011", dsun.getDncalid42());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid43())) {
+            crearRegistroTemf1(dsun, "13", "012", dsun.getDncalid43());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid44())) {
+            crearRegistroTemf1(dsun, "13", "013", dsun.getDncalid44());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid45())) {
+            crearRegistroTemf1(dsun, "13", "015", dsun.getDncalid45());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid46())) {
+            crearRegistroTemf1(dsun, "13", "016", dsun.getDncalid46());
+        }
+        
+        // Producto 16 - Documentos 001, 003, 005, 013, 015
+        if (dsun.isCalidadBaja(dsun.getDncalid49())) {
+            crearRegistroTemf1(dsun, "16", "001", dsun.getDncalid49());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid50())) {
+            crearRegistroTemf1(dsun, "16", "003", dsun.getDncalid50());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid51())) {
+            crearRegistroTemf1(dsun, "16", "005", dsun.getDncalid51());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid52())) {
+            crearRegistroTemf1(dsun, "16", "013", dsun.getDncalid52());
+        }
+        if (dsun.isCalidadBaja(dsun.getDncalid53())) {
+            crearRegistroTemf1(dsun, "16", "015", dsun.getDncalid53());
+        }
+    	
+    }
+    
+    /**
+     * Método auxiliar para crear un registro en ATVFFTEMF1
+     */
+    private void crearRegistroTemf1(AtvffDsun dsun, String producto, String documento, String calidad) {
+        if (calidad == null || calidad.trim().isEmpty()) {
+            return;
+        }
+        
+        try {
+            AtvffTemf1 temf1 = new AtvffTemf1();
+            temf1.setTfano1(dsun.getDnano());
+            temf1.setTfmes1(dsun.getDnmes());
+            temf1.setTfsuc1(dsun.getDnxnnmky());
+            temf1.setTfprod1(producto);
+            temf1.setTfdoc1(documento);
+            temf1.setTfresp1(""); // Se llenará posteriormente
+            temf1.setTfres1(""); // Se llenará posteriormente
+            temf1.setTfrel1(0); // Valor inicial
+            temf1.setTfpcal1(Integer.parseInt(calidad.trim()));
+            temf1.setTfdresp1(""); // Se llenará posteriormente
+            
+            atvffTemf1Repository.save(temf1);
+        } catch (NumberFormatException e) {
+            // Registrar el error en el log sin detener el proceso
+            log.warn("Error al procesar valor de calidad no numérico: {} para producto: {}, documento: {}, sucursal: {}, año: {}, mes: {}",
+                    calidad, producto, documento, dsun.getDnxnnmky(), dsun.getDnano(), dsun.getDnmes());
+        } catch (Exception e) {
+            // Capturar cualquier otra excepción que pueda ocurrir
+            log.error("Error inesperado al crear registro en ATVFFTEMF1: {} para producto: {}, documento: {}, sucursal: {}, año: {}, mes: {}",
+                    e.getMessage(), producto, documento, dsun.getDnxnnmky(), dsun.getDnano(), dsun.getDnmes());
+        }
     }
     
     private void ejecutarSubrutinaTemp4(String fechaInicio, String fechaFin) {
@@ -177,12 +413,14 @@ public class AtvfreinServiceImpl implements AtvfreinService {
                 temfr.setTfdoc(arqueo.getAqcodo());
                 temfr.setTfresp(arqueo.getAqcedcn());
                 temfr.setTfres(arqueo.getAqres());
+                temfr.setTfrel(0);
                 temfr.setTfpcal(temf1.getTfpcal1());
                 temfr.setTfdresp(arqueo.getAqprcu());
                 
                 atvffTemfrRepository.save(temfr);
             }
         }
+        atvffTemf1Repository.deleteAll();
     }
     
     private void ejecutarSubrutinaTemp5() {
@@ -224,6 +462,7 @@ public class AtvfreinServiceImpl implements AtvfreinService {
                 temf1.setTfdoc1(temfr.getTfdoc());
                 temf1.setTfresp1(temfr.getTfresp());
                 temf1.setTfres1(temfr.getTfres());
+                temf1.setTfrel1(0);
                 temf1.setTfpcal1(temfr.getTfpcal());
                 temf1.setTfdresp1(temfr.getTfdresp());
                 
@@ -270,10 +509,12 @@ public class AtvfreinServiceImpl implements AtvfreinService {
                     AtvffTemfr temfr = new AtvffTemfr();
                     temfr.setTfano(primerRegistro.getTfano1());
                     temfr.setTfmes(primerRegistro.getTfmes1());
-                    temfr.setTfresp(primerRegistro.getTfresp1());
                     temfr.setTfsuc(primerRegistro.getTfsuc1());
                     temfr.setTfprod(primerRegistro.getTfprod1());
                     temfr.setTfdoc(primerRegistro.getTfdoc1());
+                    temfr.setTfresp(primerRegistro.getTfresp1());
+                    temfr.setTfres(primerRegistro.getTfres1());
+                    temfr.setTfrel(0);
                     temfr.setTfpcal(primerRegistro.getTfpcal1());
                     temfr.setTfdresp(primerRegistro.getTfdresp1());
                     

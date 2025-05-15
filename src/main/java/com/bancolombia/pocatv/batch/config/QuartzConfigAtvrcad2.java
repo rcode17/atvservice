@@ -1,6 +1,5 @@
 package com.bancolombia.pocatv.batch.config;
 
-
 import org.quartz.JobDetail;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -21,11 +20,11 @@ public class QuartzConfigAtvrcad2 {
     }
 
     @Bean(name = "triggerAtvrcad2")
-    public CronTriggerFactoryBean triggerAtvrcad2(@Qualifier("jobDetailAtvrcad2") JobDetail jobDetail) {
+    public CronTriggerFactoryBean triggerAtvrcad2(@Qualifier("jobDetailAtvrcad2") JobDetail jobDetailAtvrcad2) {
         CronTriggerFactoryBean factoryBean = new CronTriggerFactoryBean();
-        factoryBean.setJobDetail(jobDetail);
-        factoryBean.setCronExpression("0 0 3 * * ?");
-        //factoryBean.setCronExpression("0 * * * * ?");
+        factoryBean.setJobDetail(jobDetailAtvrcad2);
+        factoryBean.setCronExpression("0 0 2 * * ?");
+        //factoryBean.setCronExpression("0 * * * * ?");// Ejecuta solo una vez a las 2:00 AM cada día
         return factoryBean;
     }
 }

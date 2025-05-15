@@ -42,6 +42,9 @@ public interface AtvffoasRepository extends JpaRepository<Atvffoas, AtvffoasId> 
 	List<Atvffoas> findAnnoUser(@Param("anno") Integer anno, @Param("fuser") String usuario);
 	
 	List<Atvffoas> findByIdOaanoAndIdOames(Integer oaano,Integer oames);
+	
     void deleteByIdOaanoAndIdOames(Integer oaano,Integer oames);
+    
+    List<Atvffoas> findByIdOamesAndIdOaano(Integer oames, Integer oaano);
 
 }
